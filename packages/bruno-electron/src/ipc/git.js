@@ -84,6 +84,22 @@ const registerGitIpc = (mainWindow) => {
     }
   });
 
+  ipcMain.handle('renderer:git-get-status', async (event, { collectionPath }) => {
+    const gitRootPath = getCollectionGitRootPath(collectionPath);
+    if (!gitRootPath) return { files: [], isClean: true };
+    try {
+      const git = simpleGit(gitRootPath);
+      const status = await git.status();
+      const files = status.files.map((f) => ({
+        path: f.path,
+        status: f.index !== ' ' && f.index !== '?' ? f.index : f.working_dir
+      }));
+      return { files, isClean: status.isClean() };
+    } catch {
+      return { files: [], isClean: true };
+    }
+  });
+
   ipcMain.handle('renderer:git-commit-and-push', async (event, { collectionPath, commitMessage }) => {
     const gitRootPath = getCollectionGitRootPath(collectionPath);
     if (!gitRootPath) return Promise.reject(new Error('No se encontró un repositorio git en esta colección'));

@@ -24,7 +24,7 @@ import { closeWsConnection } from 'utils/network/index';
 import ExampleTab from '../ExampleTab';
 import toast from 'react-hot-toast';
 
-const RequestTab = ({ tab, collection, tabIndex, collectionRequestTabs, folderUid, hasOverflow, setHasOverflow, dropdownContainerRef }) => {
+const RequestTab = ({ tab, collection, tabIndex, collectionRequestTabs, folderUid, hasOverflow, setHasOverflow, dropdownContainerRef, isActive }) => {
   const dispatch = useDispatch();
   const { theme } = useTheme();
   const tabNameRef = useRef(null);
@@ -462,6 +462,7 @@ const RequestTab = ({ tab, collection, tabIndex, collectionRequestTabs, folderUi
       </div>
       <GradientCloseButton
         hasChanges={hasChanges}
+        isActive={isActive}
         onClick={(e) => {
           if (!hasChanges) {
             isWS && closeWsConnection(item.uid);

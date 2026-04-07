@@ -14,18 +14,24 @@ import toast from 'react-hot-toast';
 
 const Git = ({ collection }) => {
   const [info, setInfo] = useState(null);
+  const [uncommitted, setUncommitted] = useState([]);
   const [loading, setLoading] = useState(true);
   const [confirmForcePull, setConfirmForcePull] = useState(false);
   const [commitDialog, setCommitDialog] = useState(false);
   const [commitMessage, setCommitMessage] = useState('');
+  const [changedFiles, setChangedFiles] = useState([]);
 
   const loadInfo = () => {
     if (!collection.pathname) return;
     setLoading(true);
-    window.ipcRenderer
-      .invoke('renderer:git-get-repo-info', { collectionPath: collection.pathname })
-      .then((data) => setInfo(data))
-      .catch(() => setInfo(null))
+    Promise.allSettled([
+      window.ipcRenderer.invoke('renderer:git-get-repo-info', { collectionPath: collection.pathname }),
+      window.ipcRenderer.invoke('renderer:git-get-status', { collectionPath: collection.pathname })
+    ])
+      .then(([repoResult, statusResult]) => {
+        setInfo(repoResult.status === 'fulfilled' ? repoResult.value : null);
+        setUncommitted(statusResult.status === 'fulfilled' ? (statusResult.value?.files || []) : []);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -38,7 +44,9 @@ const Git = ({ collection }) => {
       window.ipcRenderer.invoke('renderer:git-pull', { collectionPath: collection.pathname }),
       {
         loading: 'Haciendo git pull...',
-        success: () => { loadInfo(); return 'Pull completado exitosamente'; },
+        success: () => {
+          loadInfo(); return 'Pull completado exitosamente';
+        },
         error: (err) => `Error en pull: ${err?.message || 'desconocido'}`
       }
     );
@@ -46,16 +54,19 @@ const Git = ({ collection }) => {
 
   const handlePushClick = async () => {
     try {
-      const hasUncommitted = await window.ipcRenderer.invoke('renderer:git-has-uncommitted', {
+      const status = await window.ipcRenderer.invoke('renderer:git-get-status', {
         collectionPath: collection.pathname
       });
-      if (hasUncommitted) {
+      if (!status.isClean) {
+        setChangedFiles(status.files || []);
         setCommitMessage(`Actualización ${new Date().toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}`);
         setCommitDialog(true);
       } else {
+        setChangedFiles([]);
         handlePush(null);
       }
     } catch {
+      setChangedFiles([]);
       handlePush(null);
     }
   };
@@ -69,7 +80,9 @@ const Git = ({ collection }) => {
       }),
       {
         loading: 'Subiendo cambios...',
-        success: (msg) => { loadInfo(); return msg || 'Push completado exitosamente'; },
+        success: (msg) => {
+          loadInfo(); return msg || 'Push completado exitosamente';
+        },
         error: (err) => `Error en push: ${err?.message || 'desconocido'}`
       }
     );
@@ -81,7 +94,9 @@ const Git = ({ collection }) => {
       window.ipcRenderer.invoke('renderer:git-force-pull', { collectionPath: collection.pathname }),
       {
         loading: 'Descartando cambios locales y actualizando...',
-        success: () => { loadInfo(); return 'Colección sincronizada con el remoto'; },
+        success: () => {
+          loadInfo(); return 'Colección sincronizada con el remoto';
+        },
         error: (err) => `Error en force pull: ${err?.message || 'desconocido'}`
       }
     );
@@ -153,18 +168,45 @@ const Git = ({ collection }) => {
 
       {/* Status line */}
       {info.ahead === 0 && info.behind === 0 && (
-        <p className="text-xs text-gray-400 mb-3">Tu rama está al día con el remoto.</p>
+        <p className="text-xs text-gray-400 mb-1">Tu rama está al día con el remoto.</p>
       )}
       {info.behind > 0 && (
-        <p className="text-xs text-orange-500 mb-3">
+        <p className="text-xs text-orange-500 mb-1">
           {info.behind} commit{info.behind !== 1 ? 's' : ''} por detrás del remoto — haz Pull para actualizar.
         </p>
       )}
       {info.ahead > 0 && (
-        <p className="text-xs text-green-600 mb-3">
+        <p className="text-xs text-green-600 mb-1">
           {info.ahead} commit{info.ahead !== 1 ? 's' : ''} por delante del remoto — haz Push para subir.
         </p>
       )}
+
+      {/* Uncommitted changes */}
+      {uncommitted.length > 0 && (
+        <div className="mb-3 mt-1">
+          <p className="text-xs text-green-600 font-medium mb-1">
+            {uncommitted.length} archivo{uncommitted.length !== 1 ? 's' : ''} con cambios sin commitear — presiona Git Push para guardar todo.
+          </p>
+          <div className="max-h-28 overflow-y-auto rounded border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-2 py-1">
+            {uncommitted.map((f, i) => {
+              const status = f.status === '?' ? 'A' : f.status;
+              const label = status === 'A' ? 'Added' : status === 'D' ? 'Deleted' : 'Modified';
+              const color = status === 'D' ? '#ef4444' : status === 'A' ? '#16a34a' : '#ca8a04';
+              return (
+                <div key={i} className="flex items-center gap-1.5 py-0.5">
+                  <span className="text-xs font-semibold flex-shrink-0 w-16" style={{ color }}>
+                    {label}
+                  </span>
+                  <span className="text-xs font-mono text-green-800 dark:text-green-300 truncate" title={f.path}>
+                    {f.path}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {uncommitted.length === 0 && <div className="mb-3" />}
 
       {/* Action buttons */}
       <div className="flex gap-2 flex-wrap">
@@ -227,10 +269,39 @@ const Git = ({ collection }) => {
       {/* Commit message dialog */}
       {commitDialog && (
         <div className="mt-4 p-3 rounded border bg-blue-50 dark:bg-blue-900/20">
-          <p className="text-sm font-medium mb-1">Hay cambios sin commitear</p>
-          <p className="text-xs text-gray-500 mb-2">
-            Se creará un commit automáticamente antes de subir. Escribe un mensaje:
-          </p>
+          <p className="text-sm font-medium mb-2">Hay cambios sin commitear</p>
+
+          {changedFiles.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs text-gray-500 mb-1">
+                Archivos a commitear ({changedFiles.length}):
+              </p>
+              <div className="max-h-36 overflow-y-auto rounded border border-blue-200 dark:border-blue-700 bg-white dark:bg-gray-900 px-2 py-1">
+                {changedFiles.map((f, i) => (
+                  <div key={i} className="flex items-center gap-1.5 py-0.5">
+                    <span
+                      className="font-bold text-xs w-3 flex-shrink-0"
+                      style={{
+                        color:
+                          f.status === 'D'
+                            ? '#ef4444'
+                            : f.status === 'A' || f.status === '?'
+                              ? '#16a34a'
+                              : '#ca8a04'
+                      }}
+                    >
+                      {f.status === '?' ? 'A' : f.status}
+                    </span>
+                    <span className="text-xs font-mono text-gray-700 dark:text-gray-300 truncate" title={f.path}>
+                      {f.path}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <p className="text-xs text-gray-500 mb-2">Mensaje del commit:</p>
           <input
             type="text"
             value={commitMessage}

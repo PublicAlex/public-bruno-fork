@@ -161,6 +161,7 @@ const RequestTabs = () => {
                             hasOverflow={tabOverflowStates[tab.uid]}
                             setHasOverflow={createSetHasOverflow(tab.uid)}
                             dropdownContainerRef={collectionTabsRef}
+                            isActive={tab.uid === activeTabUid}
                           />
                         </DraggableTab>
                       );

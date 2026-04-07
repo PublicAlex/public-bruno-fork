@@ -11,10 +11,11 @@ const StyledWrapper = styled.div.attrs((props) => ({
   justify-content: flex-end;
   position: absolute;
   width: 44px;
-  height: 100%;
-  right: 0;
   top: 0;
+  bottom: 0;
+  right: 0;
   padding-right: 4px;
+  z-index: 2;
   
   background-image: linear-gradient(
     90deg,
@@ -26,7 +27,8 @@ const StyledWrapper = styled.div.attrs((props) => ({
   pointer-events: none;
   transition: opacity 0.15s ease;
 
-  li.active & {
+  li.active &,
+  &.is-active {
     background-image: linear-gradient(
       90deg,
       transparent 0%,
@@ -34,6 +36,7 @@ const StyledWrapper = styled.div.attrs((props) => ({
     );
   }
 
+  &.is-active,
   li:hover &,
   &.has-changes {
     opacity: 1;
@@ -81,23 +84,24 @@ const StyledWrapper = styled.div.attrs((props) => ({
     justify-content: center;
   }
 
-  &.has-changes:not(li:hover &) {
-    .draft-icon-wrapper { 
+  &.has-changes {
+    .draft-icon-wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .close-icon-wrapper { 
-      display: none; 
+    .close-icon-wrapper {
+      display: none;
     }
   }
 
-  li:hover &.has-changes {
-    .draft-icon-wrapper { 
-      display: none; 
+  li:hover &.has-changes,
+  &.is-active.has-changes:hover {
+    .draft-icon-wrapper {
+      display: none;
     }
-    .close-icon-wrapper { 
-      display: flex; 
+    .close-icon-wrapper {
+      display: flex;
     }
   }
 `;
