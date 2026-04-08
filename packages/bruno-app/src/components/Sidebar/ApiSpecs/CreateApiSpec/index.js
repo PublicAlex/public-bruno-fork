@@ -200,7 +200,7 @@ const CreateApiSpec = ({ onClose }) => {
                 checked={formik.values.importFrom === 'collection'}
               />
               <label htmlFor="collection" className="ml-1 cursor-pointer select-none">
-                From Bruno Collection
+                From Rebase Collection
               </label>
             </div>
             {formik.touched.importFrom && formik.errors.importFrom ? (

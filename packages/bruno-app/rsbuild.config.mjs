@@ -6,6 +6,9 @@ import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
 
 export default defineConfig({
+  server: {
+    port: 4003
+  },
   plugins: [
     pluginNodePolyfill(),
     pluginReact(),

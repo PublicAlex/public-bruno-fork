@@ -1,8 +1,8 @@
 require('dotenv').config({ path: process.env.DOTENV_PATH });
 
 const config = {
-  appId: 'com.usebruno.app',
-  productName: 'Bruno',
+  appId: 'com.rebase.app',
+  productName: 'Rebase',
   electronVersion: '37.6.1',
   directories: {
     buildResources: 'resources',
@@ -37,9 +37,9 @@ const config = {
     notarize: false,
     protocols: [
       {
-        name: 'Bruno',
+        name: 'Rebase',
         schemes: [
-          'bruno'
+          'rebase'
         ]
       }
     ]
@@ -59,13 +59,13 @@ const config = {
     ],
     protocols: [
       {
-        name: 'Bruno',
-        schemes: ['bruno']
+        name: 'Rebase',
+        schemes: ['rebase']
       }
     ],
     category: 'Development',
     desktop: {
-      MimeType: 'x-scheme-handler/bruno;'
+      MimeType: 'x-scheme-handler/rebase;'
     }
   },
   deb: {
@@ -93,7 +93,7 @@ const config = {
       }
     ],
     sign: null,
-    publisherName: 'Bruno Software Inc'
+    publisherName: 'Rebase'
   },
   nsis: {
     oneClick: false,

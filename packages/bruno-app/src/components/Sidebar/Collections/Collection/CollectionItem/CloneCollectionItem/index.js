@@ -130,7 +130,7 @@ const CloneCollectionItem = ({ collectionUid, item, onClose }) => {
                     ) : (
                       <Help width="300">
                         <p>
-                          Bruno saves each request as a file in your collection's folder.
+                          Rebase saves each request as a file in your collection's folder.
                         </p>
                         <p className="mt-2">
                           You can choose a file name different from your request's name or one compatible with filesystem rules.

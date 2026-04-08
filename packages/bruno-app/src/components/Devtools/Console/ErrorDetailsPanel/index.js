@@ -33,7 +33,7 @@ const ErrorInfoTab = ({ error }) => {
 - **Timestamp**: ${formatTimestamp(error.timestamp)}
 
 ### Environment
-- **Bruno Version**: ${version}
+- **Rebase Version**: ${version}
 - **OS**: ${platformLib.os.family} ${platformLib.os.version || ''}
 - **Browser**: ${platformLib.name} ${platformLib.version || ''}
 
@@ -109,7 +109,7 @@ ${error.args ? error.args.map((arg, index) => {
       <div className="section">
         <h4>Report Issue</h4>
         <div className="report-section">
-          <p>Found a bug? Help us improve Bruno by reporting this error on GitHub.</p>
+          <p>Found a bug? Help us improve Rebase by reporting this error on GitHub.</p>
           <button
             className="report-button"
             onClick={handleReportIssue}

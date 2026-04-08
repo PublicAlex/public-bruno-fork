@@ -176,7 +176,7 @@ const GoldenEdition = ({ onClose }) => {
           <ul role="list" className="space-y-3 text-left">
             <li className="flex items-center space-x-3">
               <HeartIcon />
-              <span>Support Bruno's Development</span>
+              <span>Support Rebase's Development</span>
             </li>
             {pricingOption === 'individuals' ? (
               <>
