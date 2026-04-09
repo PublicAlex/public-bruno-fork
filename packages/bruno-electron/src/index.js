@@ -27,6 +27,9 @@ if (isDev && process.env.ELECTRON_USER_DATA_PATH) {
   app.setPath('userData', process.env.ELECTRON_USER_DATA_PATH);
 }
 
+// Ensure userData directory exists before electron-store tries to use it
+fs.mkdirSync(app.getPath('userData'), { recursive: true });
+
 // Command line switches
 if (os.platform() === 'linux') {
   // Use portal version 4 that supports current_folder option
@@ -138,13 +141,13 @@ if (useSingleInstance && !gotTheLock) {
   // This is the primary instance (or single instance is disabled)
 
   // Try to remove any existing registrations
-  app.removeAsDefaultProtocolClient('bruno');
-  // Register as default handler for `bruno://` protocol URLs
-  app.setAsDefaultProtocolClient('bruno');
+  app.removeAsDefaultProtocolClient('rebase');
+  // Register as default handler for `rebase://` protocol URLs
+  app.setAsDefaultProtocolClient('rebase');
 
   if (isLinux) {
     try {
-      execSync('xdg-mime default bruno.desktop x-scheme-handler/bruno');
+      execSync('xdg-mime default rebase.desktop x-scheme-handler/rebase');
     } catch (err) {}
   }
 
