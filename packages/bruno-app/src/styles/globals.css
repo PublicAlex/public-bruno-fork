@@ -3,7 +3,7 @@
 @import 'tailwindcss/utilities';
 
 :root {
-  --color-brand: #546de5;
+  --color-brand: #7c3aed;
   --color-text: rgb(52 52 52);
   --color-sidebar-collection-item-active-indent-border: #d0d0d0;
   --color-sidebar-background: #f3f3f3;
@@ -175,6 +175,33 @@ body::-webkit-scrollbar-thumb,
  */
 body.os-mac * {
   scrollbar-width: thin;
+}
+
+/* Dark Glass — alinear variables y scrollbars con tema oscuro (clase en <html> desde ThemeProvider) */
+html.dark {
+  --color-brand: #c084fc;
+  --color-text: #f4f4f8;
+  --color-sidebar-background: rgba(12, 10, 20, 0.78);
+  --color-sidebar-collection-item-active-indent-border: rgba(168, 85, 247, 0.45);
+  --color-request-dragbar-background: rgba(255, 255, 255, 0.06);
+  --color-request-dragbar-background-active: rgba(192, 132, 252, 0.35);
+  --color-tab-inactive: #9d8fb8;
+  --color-tab-active-border: #a855f7;
+  --color-layout-border: rgba(255, 255, 255, 0.08);
+}
+
+html.dark body {
+  color: #f4f4f8;
+}
+
+html.dark body::-webkit-scrollbar-track,
+html.dark .CodeMirror-vscrollbar::-webkit-scrollbar-track {
+  background-color: #0f0d18;
+}
+
+html.dark body::-webkit-scrollbar-thumb,
+html.dark .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(168, 132, 220, 0.4);
 }
 
 /*

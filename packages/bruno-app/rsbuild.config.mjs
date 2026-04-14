@@ -30,7 +30,7 @@ export default defineConfig({
     ]
   },
   html: {
-    title: 'Bruno'
+    title: 'Rebase'
   },
   tools: {
     rspack: {

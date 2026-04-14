@@ -1,1 +1,4 @@
-npx nano-staged
+#!/usr/bin/env sh
+# Evita "npx" con ruta Windows con espacios (Program Files) en Git Bash → code 127
+cd "$(dirname "$0")/.." || exit 1
+exec node "./node_modules/nano-staged/lib/bin.js"

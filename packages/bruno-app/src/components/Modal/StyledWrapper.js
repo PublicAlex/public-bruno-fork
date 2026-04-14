@@ -23,25 +23,25 @@ const Wrapper = styled.div`
     justify-content: center;
     overflow-y: auto;
     z-index: 20;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(4, 3, 10, 0.55);
   }
 
   .bruno-modal-card {
     animation-duration: 0.85s;
     animation-delay: 0.1s;
     background: ${(props) => props.theme.modal.body.bg};
-    border-radius: ${(props) => props.theme.border.radius.base};
+    border-radius: ${(props) => props.theme.border.radius.lg};
     position: relative;
     z-index: 11;
     max-width: calc(100% - var(--spacing-base-unit));
-    box-shadow: var(--box-shadow-base);
+    box-shadow: ${(props) => props.theme.shadow.lg};
     display: flex;
     flex-direction: column;
     will-change: opacity, transform;
     flex-grow: 0;
     margin: 3vh 10vw;
     margin-top: 50px;
-    border: 1px solid ${(props) => props.theme.border.border0};
+    border: 1px solid ${(props) => props.theme.border.border1};
 
     &.modal-sm {
       min-width: 300px;
@@ -166,14 +166,14 @@ const Wrapper = styled.div`
 
   .bruno-modal-footer {
     background-color: ${(props) => props.theme.modal.body.bg};
-    border-bottom-left-radius: ${(props) => props.theme.border.radius.base};
-    border-bottom-right-radius: ${(props) => props.theme.border.radius.base};
+    border-bottom-left-radius: ${(props) => props.theme.border.radius.lg};
+    border-bottom-right-radius: ${(props) => props.theme.border.radius.lg};
   }
 
   &.modal-footer-none {
     .bruno-modal-content {
-      border-bottom-left-radius: ${(props) => props.theme.border.radius.base};
-      border-bottom-right-radius: ${(props) => props.theme.border.radius.base};
+      border-bottom-left-radius: ${(props) => props.theme.border.radius.lg};
+      border-bottom-right-radius: ${(props) => props.theme.border.radius.lg};
     }
   }
 

@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 const Wrapper = styled.div`
   position: relative;
+  background: ${(props) => props.theme.requestTabs.bg};
 
   &::after {
     content: '';

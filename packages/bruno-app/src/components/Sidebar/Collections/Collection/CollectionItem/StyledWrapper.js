@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { rgba } from 'polished';
 
 const Wrapper = styled.div`
   position: relative;
@@ -103,7 +104,10 @@ const Wrapper = styled.div`
     &:hover,
     &.item-hovered,
     &.item-keyboard-focused {
-      background: ${(props) => props.theme.sidebar.collection.item.hoverBg};
+      background:
+        linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.1)} 0%, transparent 70%),
+        ${(props) => props.theme.sidebar.collection.item.hoverBg};
+      border-radius: ${(props) => props.theme.border.radius.md};
       .menu-icon,
       .collection-item-menu-icon {
         visibility: visible;
@@ -126,10 +130,15 @@ const Wrapper = styled.div`
     }
 
     &.item-focused-in-tab {
-      background: ${(props) => props.theme.sidebar.collection.item.bg};
+      background:
+        linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.16)} 0%, transparent 72%),
+        ${(props) => props.theme.sidebar.collection.item.bg};
+      border-radius: ${(props) => props.theme.border.radius.md};
 
       &:hover {
-        background: ${(props) => props.theme.sidebar.collection.item.bg} !important;
+        background:
+          linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.16)} 0%, transparent 72%),
+          ${(props) => props.theme.sidebar.collection.item.bg} !important;
       }
 
       .indent-block {
@@ -155,6 +164,18 @@ const Wrapper = styled.div`
         color: white;
       }
     }
+  }
+
+  .collection-item-badge {
+    flex-shrink: 0;
+  }
+
+  .collection-item-badge--aggregate {
+    min-width: 1.125rem;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
   }
 
   .empty-folder-message {

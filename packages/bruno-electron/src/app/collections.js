@@ -162,7 +162,10 @@ const openCollection = async (win, watcher, collectionPath, options = {}) => {
     silentPullGitChanges(collectionPath)
       .then((result) => {
         if (!result.skipped) {
-          win.webContents.send('main:git-auto-pull-success', { collectionPath });
+          win.webContents.send('main:git-sync-finished', {
+            collectionPath,
+            ...result
+          });
         }
       })
       .catch((err) => {

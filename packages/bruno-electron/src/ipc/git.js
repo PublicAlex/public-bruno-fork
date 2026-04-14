@@ -4,6 +4,7 @@ const {
   pullGitChanges,
   pushGitChanges,
   forcePullGitChanges,
+  getPullChangeSummary,
   canPush,
   stageChanges,
   commitChanges,
@@ -35,8 +36,10 @@ const registerGitIpc = (mainWindow) => {
     const gitRootPath = getCollectionGitRootPath(collectionPath);
     if (!gitRootPath) return Promise.reject(new Error('No se encontró un repositorio git en esta colección'));
 
+    const git = simpleGit(gitRootPath);
     const currentBranch = await getCurrentGitBranch(gitRootPath);
     const processUid = `pull-${Date.now()}`;
+    const beforeRef = await git.revparse(['HEAD']).catch(() => null);
     await pullGitChanges(mainWindow, {
       gitRootPath,
       processUid,
@@ -44,7 +47,25 @@ const registerGitIpc = (mainWindow) => {
       remoteBranch: currentBranch,
       strategy: '--no-rebase'
     });
-    return 'Pull completado';
+    const afterRef = await git.revparse(['HEAD']).catch(() => null);
+    const summary = await getPullChangeSummary({
+      git,
+      gitRootPath,
+      collectionPath,
+      beforeRef,
+      afterRef,
+      source: 'pull'
+    });
+
+    mainWindow.webContents.send('main:git-sync-finished', {
+      collectionPath,
+      ...summary
+    });
+
+    return {
+      message: summary.hasChanges ? 'Pull completado con cambios nuevos' : 'Pull completado sin cambios remotos',
+      ...summary
+    };
   });
 
   ipcMain.handle('renderer:git-push', async (event, { collectionPath }) => {
@@ -119,8 +140,15 @@ const registerGitIpc = (mainWindow) => {
   });
 
   ipcMain.handle('renderer:git-force-pull', async (event, { collectionPath }) => {
-    await forcePullGitChanges(collectionPath);
-    return 'Force pull completado';
+    const summary = await forcePullGitChanges(collectionPath);
+    mainWindow.webContents.send('main:git-sync-finished', {
+      collectionPath,
+      ...summary
+    });
+    return {
+      message: summary.hasChanges ? 'Force pull completado con cambios nuevos' : 'Force pull completado sin cambios remotos',
+      ...summary
+    };
   });
 
   ipcMain.handle('renderer:git-get-branch', async (event, { collectionPath }) => {

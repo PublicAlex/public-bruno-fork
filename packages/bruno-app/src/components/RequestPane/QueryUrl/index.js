@@ -393,7 +393,7 @@ const QueryUrl = ({ item, collection, handleRun }) => {
         />
 
       </div>
-      <div className="flex items-center h-full mx-2 gap-3 cursor-pointer" id="send-request" onClick={handleRun}>
+      <div className="flex items-center h-full mx-2 gap-3" id="send-request">
         <div
           title="Generate Code"
           className="infotip"
@@ -424,20 +424,25 @@ const QueryUrl = ({ item, collection, handleRun }) => {
           </span>
         </div>
         {isLoading || item.response?.stream?.running ? (
-          <IconSquareRoundedX
-            color={theme.requestTabPanel.url.iconDanger}
-            strokeWidth={1.5}
-            size={20}
+          <button
+            type="button"
+            className="query-url-send-cancel"
             data-testid="cancel-request-icon"
             onClick={handleCancelRequest}
-          />
+            aria-label="Cancel request"
+          >
+            <IconSquareRoundedX color="currentColor" strokeWidth={1.5} size={18} />
+          </button>
         ) : (
-          <IconArrowRight
-            color={theme.requestTabPanel.url.icon}
-            strokeWidth={1.5}
-            size={20}
+          <button
+            type="button"
+            className="query-url-send-launch"
             data-testid="send-arrow-icon"
-          />
+            onClick={handleRun}
+            aria-label="Send request"
+          >
+            <IconArrowRight color="currentColor" strokeWidth={1.5} size={18} />
+          </button>
         )}
       </div>
       {generateCodeItemModalOpen && (

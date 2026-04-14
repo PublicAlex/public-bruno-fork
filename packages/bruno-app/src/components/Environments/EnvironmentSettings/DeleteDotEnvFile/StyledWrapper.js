@@ -1,15 +1,8 @@
 import styled from 'styled-components';
+import { neonModalDangerSubmitStyles } from 'themes/neonSubmitMixins';
 
 const Wrapper = styled.div`
-  button.submit {
-    color: white;
-    background-color: var(--color-background-danger) !important;
-    border: inherit !important;
-
-    &:hover {
-      border: inherit !important;
-    }
-  }
+  ${(props) => neonModalDangerSubmitStyles(props.theme)}
 `;
 
 export default Wrapper;

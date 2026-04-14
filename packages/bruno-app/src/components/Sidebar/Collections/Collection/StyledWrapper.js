@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { rgba } from 'polished';
 
 const Wrapper = styled.div`
   .collection-name {
@@ -19,7 +20,10 @@ const Wrapper = styled.div`
     &:hover,
     &:focus-within,
     &.collection-keyboard-focused {
-      background: ${(props) => props.theme.sidebar.collection.item.hoverBg};
+      background:
+        linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.12)} 0%, transparent 70%),
+        ${(props) => props.theme.sidebar.collection.item.hoverBg};
+      border-radius: ${(props) => props.theme.border.radius.md};
       .collection-actions {
         visibility: visible;
         background-color: transparent !important;
@@ -72,10 +76,15 @@ const Wrapper = styled.div`
     }
 
     &.collection-focused-in-tab {
-      background: ${(props) => props.theme.sidebar.collection.item.bg};
+      background:
+        linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.18)} 0%, transparent 75%),
+        ${(props) => props.theme.sidebar.collection.item.bg};
+      border-radius: ${(props) => props.theme.border.radius.md};
 
       &:hover {
-        background: ${(props) => props.theme.sidebar.collection.item.bg} !important;
+        background:
+          linear-gradient(90deg, ${(props) => rgba(props.theme.brand, 0.18)} 0%, transparent 75%),
+          ${(props) => props.theme.sidebar.collection.item.bg} !important;
       }
     }
 

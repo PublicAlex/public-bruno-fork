@@ -416,16 +416,18 @@ const GrpcQueryUrl = ({ item, collection, handleRun }) => {
         )}
 
         {(!isConnectionActive || !isStreamingMethod) && (
-          <div
-            className="cursor-pointer"
+          <button
+            type="button"
+            className="query-url-send-launch"
             data-testid="grpc-send-request-button"
             onClick={(e) => {
               e.stopPropagation();
               handleRun(e);
             }}
+            aria-label="Send gRPC request"
           >
-            <IconArrowRight color={theme.requestTabPanel.url.icon} strokeWidth={1.5} size={20} />
-          </div>
+            <IconArrowRight color="currentColor" strokeWidth={1.5} size={18} />
+          </button>
         )}
       </div>
       {isConnectionActive && isStreamingMethod && (

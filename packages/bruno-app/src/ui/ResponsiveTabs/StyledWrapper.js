@@ -1,9 +1,21 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { rgba } from 'polished';
 
 const StyledWrapper = styled.div`
   &.tabs {
     overflow: hidden;
     min-width: 0;
+
+    ${(props) =>
+      props.theme.mode === 'dark'
+      && css`
+        padding: 2px 6px 0;
+        border-radius: ${props.theme.border.radius.md};
+        background: ${rgba(props.theme.background.surface0, 0.55)};
+        border: 1px solid ${props.theme.border.border1};
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+      `}
 
     > div:first-child {
       overflow: hidden;

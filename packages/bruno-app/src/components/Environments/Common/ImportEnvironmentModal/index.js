@@ -154,7 +154,7 @@ const ImportEnvironmentModal = ({ type = 'collection', collection, onClose, onEn
               {isDragOver ? 'Drop your environment files here' : 'Import your environments'}
             </span>
             <span className="mt-1 block text-xs text-muted">
-              Drag & drop JSON files/folders or click to browse. Supports both Bruno and Postman formats.
+              Drag & drop JSON files/folders or click to browse. Supports both Rebase and Postman formats.
             </span>
           </div>
         </div>

@@ -509,7 +509,7 @@ const SaveTransientRequest = ({ item: itemProp, collection: collectionProp, isOp
                                 <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
                               </p>
                               <p className="mt-1">
-                                <strong>BRU:</strong> Bruno's native file format (.bru files)
+                                <strong>BRU:</strong> Rebase native file format (.bru files)
                               </p>
                             </Help>
                           </label>

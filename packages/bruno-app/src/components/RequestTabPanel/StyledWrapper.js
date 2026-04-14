@@ -1,6 +1,17 @@
 import styled from 'styled-components';
+import { rgba } from 'polished';
 
 const StyledWrapper = styled.div`
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  background: ${(props) =>
+    props.theme.mode === 'dark'
+      ? `linear-gradient(180deg, ${rgba(255, 255, 255, 0.02)} 0%, transparent 36%), ${props.theme.background.base}`
+      : props.theme.background.base};
+
   &.dragging {
     cursor: col-resize;
 

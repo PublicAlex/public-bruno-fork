@@ -25,7 +25,7 @@ import {
   IconCloudUpload
 } from '@tabler/icons';
 import OpenAPISyncIcon from 'components/Icons/OpenAPISync';
-import { toggleCollection, collapseFullCollection } from 'providers/ReduxStore/slices/collections';
+import { toggleCollection, collapseFullCollection, dismissGitChangeMarkers } from 'providers/ReduxStore/slices/collections';
 import { mountCollection, moveCollectionAndPersist, handleCollectionItemDrop, pasteItem, showInFolder, saveCollectionSecurityConfig } from 'providers/ReduxStore/slices/collections/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTab, makeTabPermanent } from 'providers/ReduxStore/slices/tabs';
@@ -58,6 +58,20 @@ import { createEmptyStateMenuItems } from 'utils/collections/emptyStateRequest';
 // Delay before showing empty collection state (ms)
 // This prevents flicker from race condition between loading state and item batch updates
 const EMPTY_STATE_DELAY_MS = 300;
+
+const getMarkerTone = (markers = []) => {
+  if (markers.some((marker) => marker.status === 'added')) return 'success';
+  if (markers.some((marker) => marker.status === 'renamed')) return 'info';
+  if (markers.some((marker) => marker.status === 'deleted')) return 'danger';
+  return markers.length ? 'warning' : 'muted';
+};
+
+const getCollectionMarkerLabel = (markers = []) => {
+  if (markers.some((marker) => marker.status === 'added')) return 'Nuevo';
+  if (markers.some((marker) => marker.status === 'renamed')) return 'Cambio';
+  if (markers.some((marker) => marker.status === 'deleted')) return 'Delete';
+  return markers.length ? 'Update' : '';
+};
 
 const Collection = ({ collection, searchText }) => {
   const isOpenAPISyncEnabled = useBetaFeature(BETA_FEATURES.OPENAPI_SYNC);
@@ -118,6 +132,10 @@ const Collection = ({ collection, searchText }) => {
 
   const hasSearchText = searchText && searchText?.trim()?.length;
   const collectionIsCollapsed = hasSearchText ? false : collection.collapsed;
+  const gitChangeMarkers = collection?.gitChangeMarkers || [];
+  const incomingCount = gitChangeMarkers.length;
+  const collectionMarkerTone = getMarkerTone(gitChangeMarkers);
+  const collectionMarkerLabel = getCollectionMarkerLabel(gitChangeMarkers);
 
   const iconClassName = classnames({
     'rotate-90': !collectionIsCollapsed
@@ -128,6 +146,13 @@ const Collection = ({ collection, searchText }) => {
     // Check if the click came from the chevron icon
     const isChevronClick = event.target.closest('svg')?.classList.contains('chevron-icon');
     setTimeout(scrollToTheActiveTab, 50);
+
+    if (incomingCount && collection.pathname) {
+      dispatch(dismissGitChangeMarkers({
+        collectionUid: collection.uid,
+        pathname: collection.pathname
+      }));
+    }
 
     ensureCollectionIsMounted();
 
@@ -351,7 +376,6 @@ const Collection = ({ collection, searchText }) => {
   const requestItems = sortItemsBySequence(filter(collection.items, (i) => isItemARequest(i) && !i.isTransient));
   const folderItems = sortByNameThenSequence(filter(collection.items, (i) => isItemAFolder(i) && !i.isTransient));
   const showEmptyCollectionMessage = showEmptyState && !hasSearchText;
-
   const emptyStateMenuItems = createEmptyStateMenuItems({ dispatch, collection, itemUid: null });
 
   const menuItems = [
@@ -541,8 +565,18 @@ const Collection = ({ collection, searchText }) => {
               onDoubleClick={handleCollectionDoubleClick}
             />
           </ActionIcon>
-          <div className="ml-1 w-full" id="sidebar-collection-name" title={collection.name}>
-            {collection.name}
+          <div className="ml-1 flex w-full items-center gap-2 overflow-hidden" id="sidebar-collection-name" title={collection.name}>
+            {incomingCount > 0 && (
+              <StatusBadge status={collectionMarkerTone} size="xs" radius="full">
+                {collectionMarkerLabel}
+              </StatusBadge>
+            )}
+            <span className="truncate">{collection.name}</span>
+            {incomingCount > 0 && (
+              <StatusBadge status={collectionMarkerTone} size="xs" radius="full">
+                {incomingCount}
+              </StatusBadge>
+            )}
           </div>
           {isLoading ? <IconLoader2 className="animate-spin mx-1" size={18} strokeWidth={1.5} /> : null}
         </div>
