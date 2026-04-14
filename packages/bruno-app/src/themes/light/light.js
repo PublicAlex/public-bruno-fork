@@ -1,10 +1,10 @@
 import { rgba } from 'polished';
 export const palette = {
   primary: {
-    SOLID: 'hsl(33, 80%, 46%)',
-    TEXT: 'hsl(33, 67%, 45%)',
-    STRONG: 'hsl(33, 67%, 50%)',
-    SUBTLE: 'hsl(33, 69%, 56%)'
+    SOLID: '#7c3aed',
+    TEXT: '#6d28d9',
+    STRONG: '#5b21b6',
+    SUBTLE: 'rgba(124, 58, 237, 0.45)'
   },
   hues: {
     RED: 'hsl(8,   60%, 52%)',
@@ -23,7 +23,7 @@ export const palette = {
     PINK: 'hsl(328, 50%, 48%)'
   },
   system: {
-    CONTROL_ACCENT: '#b96f1d'
+    CONTROL_ACCENT: '#7c3aed'
   },
   background: {
     BASE: '#ffffff',
@@ -114,24 +114,24 @@ const lightTheme = {
 
   status: {
     info: {
-      background: rgba(palette.intent.INFO, 0.15),
-      text: palette.intent.INFO,
-      border: palette.intent.INFO
+      background: rgba(2, 132, 199, 0.2),
+      text: '#0369a1',
+      border: rgba(14, 165, 233, 0.85)
     },
     success: {
-      background: rgba(palette.intent.SUCCESS, 0.15),
-      text: palette.intent.SUCCESS,
-      border: palette.intent.SUCCESS
+      background: rgba(5, 122, 85, 0.18),
+      text: '#047857',
+      border: rgba(16, 185, 129, 0.85)
     },
     warning: {
-      background: rgba(palette.intent.WARNING, 0.15),
-      text: palette.intent.WARNING,
-      border: palette.intent.WARNING
+      background: rgba(217, 119, 6, 0.2),
+      text: '#b45309',
+      border: rgba(245, 158, 11, 0.9)
     },
     danger: {
-      background: rgba(palette.intent.DANGER, 0.15),
-      text: palette.intent.DANGER,
-      border: palette.intent.DANGER
+      background: rgba(225, 29, 72, 0.16),
+      text: '#be123c',
+      border: rgba(244, 63, 94, 0.88)
     }
   },
 

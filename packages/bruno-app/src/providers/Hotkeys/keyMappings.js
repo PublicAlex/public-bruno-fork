@@ -9,7 +9,7 @@ const KeyMapping = {
   closeBruno: {
     mac: 'command+Q',
     windows: 'ctrl+shift+q',
-    name: 'Close Bruno'
+    name: 'Close Rebase'
   },
   switchToPreviousTab: {
     mac: 'command+pageup',

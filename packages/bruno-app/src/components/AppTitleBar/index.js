@@ -281,9 +281,9 @@ const AppTitleBar = () => {
           </MenuDropdown>
         </div>
 
-        {/* Center section: Bruno logo + text */}
+        {/* Center section: logo + nombre Rebase */}
         <div className="titlebar-center">
-          <Bruno width={18} />
+          <Bruno width={28} />
           <span className="bruno-text">Rebase</span>
         </div>
 

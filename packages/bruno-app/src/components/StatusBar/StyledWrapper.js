@@ -61,8 +61,8 @@ const StyledWrapper = styled.div`
   .status-bar-divider {
     width: 1px;
     height: 16px;
-    background: ${(props) => props.theme.sidebar.dragbar};
-    opacity: 0.4;
+    background: ${(props) => props.theme.sidebar.dragbar.border};
+    opacity: 0.5;
   }
 
   .status-bar-version {

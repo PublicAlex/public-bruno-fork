@@ -23,7 +23,7 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import { addTab, focusTab, makeTabPermanent } from 'providers/ReduxStore/slices/tabs';
 import { handleCollectionItemDrop, sendRequest, showInFolder, pasteItem, saveRequest } from 'providers/ReduxStore/slices/collections/actions';
-import { toggleCollectionItem, addResponseExample } from 'providers/ReduxStore/slices/collections';
+import { toggleCollectionItem, addResponseExample, dismissGitChangeMarkers } from 'providers/ReduxStore/slices/collections';
 import { insertTaskIntoQueue } from 'providers/ReduxStore/slices/app';
 import { uuid } from 'utils/common';
 import { copyRequest } from 'providers/ReduxStore/slices/app';
@@ -56,7 +56,22 @@ import CreateExampleModal from 'components/ResponseExample/CreateExampleModal';
 import { openDevtoolsAndSwitchToTerminal } from 'utils/terminal';
 import ActionIcon from 'ui/ActionIcon';
 import MenuDropdown from 'ui/MenuDropdown';
+import StatusBadge from 'ui/StatusBadge';
 import { useSidebarAccordion } from 'components/Sidebar/SidebarAccordionContext';
+
+const getMarkerTone = (markers = []) => {
+  if (markers.some((marker) => marker.status === 'added')) return 'success';
+  if (markers.some((marker) => marker.status === 'renamed')) return 'info';
+  if (markers.some((marker) => marker.status === 'deleted')) return 'danger';
+  return markers.length ? 'warning' : 'muted';
+};
+
+const getMarkerLabel = (markers = []) => {
+  if (markers.some((marker) => marker.status === 'added')) return 'Nuevo';
+  if (markers.some((marker) => marker.status === 'renamed')) return 'Cambio';
+  if (markers.some((marker) => marker.status === 'deleted')) return 'Delete';
+  return markers.length ? 'Update' : '';
+};
 
 const CollectionItem = ({ item, collectionUid, collectionPathname, searchText }) => {
   const { dropdownContainerRef } = useSidebarAccordion();
@@ -89,6 +104,17 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
   const hasSearchText = searchText && searchText?.trim()?.length;
   const itemIsCollapsed = hasSearchText ? false : item.collapsed;
   const isFolder = isItemAFolder(item);
+  const normalizedItemPath = item.pathname?.replace(/\\/g, '/').replace(/\/+$/, '');
+  const gitChangeMarkers = collection?.gitChangeMarkers || [];
+  const matchingMarkers = !!normalizedItemPath
+    ? gitChangeMarkers.filter((marker) => {
+        const normalizedCandidate = marker?.path?.replace(/\\/g, '/').replace(/\/+$/, '');
+        return normalizedCandidate === normalizedItemPath || (isFolder && normalizedCandidate.startsWith(`${normalizedItemPath}/`));
+      })
+    : [];
+  const hasIncomingChanges = matchingMarkers.length > 0;
+  const markerTone = getMarkerTone(matchingMarkers);
+  const markerLabel = getMarkerLabel(matchingMarkers);
 
   // Check if request has examples (only for HTTP requests)
   const hasExamples = isItemARequest(item) && item.type === 'http-request' && item.examples && item.examples.length > 0;
@@ -214,6 +240,12 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
 
   const handleClick = (event) => {
     if (event && event.detail != 1) return;
+    if (hasIncomingChanges && item.pathname) {
+      dispatch(dismissGitChangeMarkers({
+        collectionUid,
+        pathname: item.pathname
+      }));
+    }
     // scroll to the active tab
     setTimeout(scrollToTheActiveTab, 50);
     const isRequest = isItemARequest(item);
@@ -692,6 +724,22 @@ const CollectionItem = ({ item, collectionUid, collectionPathname, searchText })
               <span className="item-name" title={item.name}>
                 {item.name}
               </span>
+              {hasIncomingChanges
+                && (isFolder ? (
+                  <StatusBadge
+                    status={markerTone}
+                    size="xs"
+                    radius="full"
+                    className="ml-2 collection-item-badge collection-item-badge--aggregate"
+                    title={`${matchingMarkers.length} cambio${matchingMarkers.length !== 1 ? 's' : ''} en esta carpeta`}
+                  >
+                    {matchingMarkers.length}
+                  </StatusBadge>
+                ) : (
+                  <StatusBadge status={markerTone} size="xs" radius="full" className="ml-2 collection-item-badge">
+                    {markerLabel}
+                  </StatusBadge>
+                ))}
             </div>
           </div>
           <div className="pr-2">

@@ -35,7 +35,12 @@ import toast from 'react-hot-toast';
 import { useDispatch, useStore } from 'react-redux';
 import { isElectron } from 'utils/common/platform';
 import { globalEnvironmentsUpdateEvent, updateGlobalEnvironments } from 'providers/ReduxStore/slices/global-environments';
-import { collectionAddOauth2CredentialsByUrl, collectionClearOauth2CredentialsByCredentialsId, updateCollectionLoadingState } from 'providers/ReduxStore/slices/collections/index';
+import {
+  collectionAddOauth2CredentialsByUrl,
+  collectionClearOauth2CredentialsByCredentialsId,
+  recordGitSyncEvent,
+  updateCollectionLoadingState
+} from 'providers/ReduxStore/slices/collections/index';
 import { addLog } from 'providers/ReduxStore/slices/logs';
 import { updateSystemResources } from 'providers/ReduxStore/slices/performance';
 import { apiSpecAddFileEvent, apiSpecChangeFileEvent } from 'providers/ReduxStore/slices/apiSpec';
@@ -338,8 +343,26 @@ const useIpcEvents = () => {
       dispatch(setGitVersion(val));
     });
 
-    const gitAutoPullSuccessListener = ipcRenderer.on('main:git-auto-pull-success', () => {
-      toast.success('Colección actualizada desde el repositorio git', { duration: 3000 });
+    const gitSyncFinishedListener = ipcRenderer.on('main:git-sync-finished', (payload) => {
+      const state = store.getState();
+      const collection = state.collections?.collections?.find((c) => c.pathname === payload?.collectionPath);
+
+      if (!collection) {
+        return;
+      }
+
+      dispatch(recordGitSyncEvent({
+        collectionUid: collection.uid,
+        event: payload
+      }));
+
+      if (payload?.source === 'auto-pull') {
+        const totalChanges = payload?.changedFiles?.length || 0;
+        const message = totalChanges
+          ? `Colección actualizada desde git con ${totalChanges} cambio${totalChanges !== 1 ? 's' : ''}`
+          : 'Colección revisada automáticamente; no llegaron cambios nuevos';
+        toast.success(message, { duration: 3500 });
+      }
     });
 
     const gitAutoPullFailedListener = ipcRenderer.on('main:git-auto-pull-failed', () => {
@@ -383,7 +406,7 @@ const useIpcEvents = () => {
       removeSystemResourcesListener();
       gitVersionListener();
       gitAutoPullFailedListener();
-      gitAutoPullSuccessListener();
+      gitSyncFinishedListener();
     };
   }, [isElectron]);
 };

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { neonTablePrimarySubmitStyles } from 'themes/neonSubmitMixins';
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -130,20 +131,7 @@ const StyledWrapper = styled.div`
     gap: 8px;
   }
 
-  .submit {
-    padding: 6px 16px;
-    font-size: ${(props) => props.theme.font.size.sm};
-    border-radius: ${(props) => props.theme.border.radius.base};
-    border: none;
-    background: ${(props) => props.theme.brand};
-    color: ${(props) => props.theme.bg};
-    cursor: pointer;
-    transition: opacity 0.15s ease;
-
-    &:hover {
-      opacity: 0.9;
-    }
-  }
+  ${(props) => neonTablePrimarySubmitStyles(props.theme)}
 
   .reset {
     background: transparent;

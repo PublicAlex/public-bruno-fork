@@ -166,7 +166,7 @@ export const IntroductionRender = () => {
           letterSpacing: '-0.5px'
         }}
         >
-          Bruno Design System
+          Rebase Design System
         </h1>
 
         <p style={{
@@ -177,7 +177,7 @@ export const IntroductionRender = () => {
           lineHeight: 1.7
         }}
         >
-          A unified visual language for building consistent, accessible, and beautiful interfaces across Bruno's ecosystem.
+          A unified visual language for building consistent, accessible, and beautiful interfaces across Rebase.
         </p>
 
         {/* Theme indicator */}
@@ -377,7 +377,7 @@ export const PrimaryColorsRender = () => {
           lineHeight: 1.7
         }}
         >
-          Four carefully calibrated variants of Bruno's brand color, each designed for a specific role in the interface.
+          Four carefully calibrated variants of the brand color, each designed for a specific role in the interface.
         </p>
       </div>
 
@@ -661,7 +661,7 @@ export const BackgroundLayersRender = () => {
                 <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: theme.colors?.text?.warning || '#ffbd2e' }} />
                 <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: theme.colors?.text?.green || '#28c840' }} />
               </div>
-              <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', opacity: 0.5 }}>Bruno</div>
+              <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', opacity: 0.5 }}>Rebase</div>
             </div>
 
             {/* Main area */}

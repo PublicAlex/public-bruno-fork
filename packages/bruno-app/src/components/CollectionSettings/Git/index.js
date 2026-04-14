@@ -1,18 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
-  IconGitBranch,
+  IconAlertTriangle,
+  IconArrowDown,
+  IconArrowUp,
   IconCloudDownload,
   IconCloudUpload,
-  IconAlertTriangle,
-  IconLink,
   IconFolder,
-  IconArrowUp,
-  IconArrowDown,
-  IconRefresh
+  IconGitBranch,
+  IconHistory,
+  IconLink,
+  IconRefresh,
+  IconStars
 } from '@tabler/icons';
 import toast from 'react-hot-toast';
+import StatusBadge from 'ui/StatusBadge';
+import { clearGitChangeMarkers } from 'providers/ReduxStore/slices/collections';
+import StyledWrapper from './StyledWrapper';
+
+const getFileState = (rawStatus) => {
+  const status = rawStatus === '?' ? 'A' : rawStatus;
+
+  switch (status) {
+    case 'A':
+    case 'added':
+      return { label: 'Nuevo', tone: 'success' };
+    case 'D':
+    case 'deleted':
+      return { label: 'Eliminado', tone: 'danger' };
+    case 'R':
+    case 'renamed':
+      return { label: 'Renombrado', tone: 'info' };
+    default:
+      return { label: 'Actualizado', tone: 'warning' };
+  }
+};
+
+const getSyncSourceLabel = (source) => {
+  switch (source) {
+    case 'auto-pull':
+      return 'Auto Pull';
+    case 'force-pull':
+      return 'Force Pull';
+    default:
+      return 'Pull';
+  }
+};
+
+const formatSyncMessage = (result, defaultMessage) => {
+  const changes = result?.changedFiles?.length || 0;
+  if (!changes) {
+    return defaultMessage;
+  }
+
+  return `${defaultMessage} con ${changes} cambio${changes !== 1 ? 's' : ''}`;
+};
 
 const Git = ({ collection }) => {
+  const dispatch = useDispatch();
   const [info, setInfo] = useState(null);
   const [uncommitted, setUncommitted] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +65,9 @@ const Git = ({ collection }) => {
   const [commitDialog, setCommitDialog] = useState(false);
   const [commitMessage, setCommitMessage] = useState('');
   const [changedFiles, setChangedFiles] = useState([]);
+
+  const syncHistory = collection.gitSyncHistory || [];
+  const pendingBadges = collection.gitChangeMarkers || [];
 
   const loadInfo = () => {
     if (!collection.pathname) return;
@@ -44,8 +92,9 @@ const Git = ({ collection }) => {
       window.ipcRenderer.invoke('renderer:git-pull', { collectionPath: collection.pathname }),
       {
         loading: 'Haciendo git pull...',
-        success: () => {
-          loadInfo(); return 'Pull completado exitosamente';
+        success: (result) => {
+          loadInfo();
+          return formatSyncMessage(result, 'Pull completado');
         },
         error: (err) => `Error en pull: ${err?.message || 'desconocido'}`
       }
@@ -81,7 +130,8 @@ const Git = ({ collection }) => {
       {
         loading: 'Subiendo cambios...',
         success: (msg) => {
-          loadInfo(); return msg || 'Push completado exitosamente';
+          loadInfo();
+          return msg || 'Push completado exitosamente';
         },
         error: (err) => `Error en push: ${err?.message || 'desconocido'}`
       }
@@ -94,241 +144,332 @@ const Git = ({ collection }) => {
       window.ipcRenderer.invoke('renderer:git-force-pull', { collectionPath: collection.pathname }),
       {
         loading: 'Descartando cambios locales y actualizando...',
-        success: () => {
-          loadInfo(); return 'Colección sincronizada con el remoto';
+        success: (result) => {
+          loadInfo();
+          return formatSyncMessage(result, 'Colección sincronizada con el remoto');
         },
         error: (err) => `Error en force pull: ${err?.message || 'desconocido'}`
       }
     );
   };
 
-  // Shorten a remote URL for display (hide token if present)
   const formatRemoteUrl = (url) => {
     if (!url) return null;
-    // Hide access tokens in HTTPS URLs (https://TOKEN@github.com/...)
     return url.replace(/\/\/[^@]+@/, '//***@');
   };
 
   if (loading) {
-    return <div className="px-2 py-4 text-sm text-gray-400">Cargando información del repositorio...</div>;
+    return <StyledWrapper className="git-shell empty-state">Cargando información del repositorio...</StyledWrapper>;
   }
 
   if (!info) {
-    return <div className="px-2 py-4 text-sm text-gray-400">No se pudo obtener información del repositorio.</div>;
+    return <StyledWrapper className="git-shell empty-state">No se pudo obtener información del repositorio.</StyledWrapper>;
   }
 
   return (
-    <div className="px-2 py-4">
+    <StyledWrapper className="git-shell">
+      <section className="page-header">
+        <div className="page-title-block">
+          <p className="eyebrow">Sincronización inteligente</p>
+          <h3>{info.repoName || collection.name}</h3>
+          <p className="hero-text">
+            Un resumen claro de lo que llegó desde el remoto, lo que sigue pendiente localmente y las novedades que todavía no has revisado.
+          </p>
+        </div>
 
-      {/* Repo info card */}
-      <div className="mb-4 rounded border p-3 flex flex-col gap-2 text-sm">
+        <div className="header-badges">
+          <StatusBadge status={pendingBadges.length ? 'info' : 'muted'} size="sm" radius="full">
+            {pendingBadges.length ? `${pendingBadges.length} por revisar` : 'Todo revisado'}
+          </StatusBadge>
+          <StatusBadge status={uncommitted.length ? 'success' : 'muted'} size="sm" radius="full">
+            {uncommitted.length} local{uncommitted.length !== 1 ? 'es' : ''}
+          </StatusBadge>
+          <p className="header-actions-hint" aria-hidden="true">
+            Acciones de sincronización en la tarjeta de estado, debajo de las métricas.
+          </p>
+        </div>
+      </section>
 
-        {/* Repo name */}
-        {info.repoName && (
-          <div className="flex items-center gap-2">
-            <IconFolder size={14} strokeWidth={1.5} className="flex-shrink-0 text-gray-400" />
-            <span className="font-semibold">{info.repoName}</span>
+      <section className="top-grid">
+        <section className="hero-card summary-card">
+          <div className="section-header compact-header">
+            <div>
+              <h4>Estado del repositorio</h4>
+              <p>Lo esencial para saber si debes traer cambios, subirlos o revisar novedades.</p>
+            </div>
           </div>
-        )}
 
-        {/* Branch */}
-        <div className="flex items-center gap-2">
-          <IconGitBranch size={14} strokeWidth={1.5} className="flex-shrink-0 text-gray-400" />
-          <span>{info.branch || 'Sin rama detectada'}</span>
-          {(info.ahead > 0 || info.behind > 0) && (
-            <span className="flex items-center gap-1 ml-1 text-xs text-gray-400">
-              {info.ahead > 0 && (
-                <span className="flex items-center gap-0.5 text-green-600">
-                  <IconArrowUp size={11} strokeWidth={2} />{info.ahead}
-                </span>
-              )}
-              {info.behind > 0 && (
-                <span className="flex items-center gap-0.5 text-orange-500">
-                  <IconArrowDown size={11} strokeWidth={2} />{info.behind}
-                </span>
-              )}
+          <div className={`summary-banner ${info.behind > 0 ? 'warning' : info.ahead > 0 ? 'success' : 'muted'}`}>
+            <IconStars size={16} strokeWidth={1.8} />
+            <span>
+              {info.behind > 0
+                ? `Hay ${info.behind} commit${info.behind !== 1 ? 's' : ''} pendientes por bajar del remoto.`
+                : info.ahead > 0
+                  ? `Hay ${info.ahead} commit${info.ahead !== 1 ? 's' : ''} listos para subir al remoto.`
+                  : 'La rama local está alineada con el remoto.'}
             </span>
-          )}
-        </div>
-
-        {/* Remote URL */}
-        {info.remoteUrl && info.remoteUrl !== 'origin' && (
-          <div className="flex items-start gap-2">
-            <IconLink size={14} strokeWidth={1.5} className="flex-shrink-0 mt-0.5 text-gray-400" />
-            <span className="text-xs text-gray-500 break-all">{formatRemoteUrl(info.remoteUrl)}</span>
           </div>
-        )}
 
-        {/* Local path */}
-        <div className="flex items-start gap-2">
-          <IconFolder size={14} strokeWidth={1.5} className="flex-shrink-0 mt-0.5 text-gray-400" />
-          <span className="text-xs text-gray-400 break-all">{info.gitRootPath}</span>
-        </div>
-      </div>
-
-      {/* Status line */}
-      {info.ahead === 0 && info.behind === 0 && (
-        <p className="text-xs text-gray-400 mb-1">Tu rama está al día con el remoto.</p>
-      )}
-      {info.behind > 0 && (
-        <p className="text-xs text-orange-500 mb-1">
-          {info.behind} commit{info.behind !== 1 ? 's' : ''} por detrás del remoto — haz Pull para actualizar.
-        </p>
-      )}
-      {info.ahead > 0 && (
-        <p className="text-xs text-green-600 mb-1">
-          {info.ahead} commit{info.ahead !== 1 ? 's' : ''} por delante del remoto — haz Push para subir.
-        </p>
-      )}
-
-      {/* Uncommitted changes */}
-      {uncommitted.length > 0 && (
-        <div className="mb-3 mt-1">
-          <p className="text-xs text-green-600 font-medium mb-1">
-            {uncommitted.length} archivo{uncommitted.length !== 1 ? 's' : ''} con cambios sin commitear — presiona Git Push para guardar todo.
-          </p>
-          <div className="max-h-28 overflow-y-auto rounded border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 px-2 py-1">
-            {uncommitted.map((f, i) => {
-              const status = f.status === '?' ? 'A' : f.status;
-              const label = status === 'A' ? 'Added' : status === 'D' ? 'Deleted' : 'Modified';
-              const color = status === 'D' ? '#ef4444' : status === 'A' ? '#16a34a' : '#ca8a04';
-              return (
-                <div key={i} className="flex items-center gap-1.5 py-0.5">
-                  <span className="text-xs font-semibold flex-shrink-0 w-16" style={{ color }}>
-                    {label}
-                  </span>
-                  <span className="text-xs font-mono text-green-800 dark:text-green-300 truncate" title={f.path}>
-                    {f.path}
-                  </span>
-                </div>
-              );
-            })}
+          <div className="metrics-grid">
+            <div className="metric-card metric-card--ahead">
+              <span className="metric-label">Ahead</span>
+              <strong className="metric-value">{info.ahead}</strong>
+            </div>
+            <div className="metric-card metric-card--behind">
+              <span className="metric-label">Behind</span>
+              <strong className="metric-value">{info.behind}</strong>
+            </div>
+            <div className="metric-card metric-card--locales">
+              <span className="metric-label">Locales</span>
+              <strong className="metric-value">{uncommitted.length}</strong>
+            </div>
+            <div className="metric-card metric-card--pendientes">
+              <span className="metric-label">Pendientes</span>
+              <strong className="metric-value">{pendingBadges.length}</strong>
+            </div>
           </div>
-        </div>
-      )}
-      {uncommitted.length === 0 && <div className="mb-3" />}
 
-      {/* Action buttons */}
-      <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={() => setConfirmForcePull(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded border border-yellow-500 text-yellow-600 hover:opacity-80 transition-opacity"
-          title="Descarta cambios locales y sincroniza con el remoto"
-        >
-          <IconAlertTriangle size={14} strokeWidth={1.5} />
-          Force Pull
-        </button>
-        <button
-          onClick={handlePull}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded border hover:opacity-80 transition-opacity"
-        >
-          <IconCloudDownload size={14} strokeWidth={1.5} />
-          Git Pull
-        </button>
-        <button
-          onClick={handlePushClick}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded border hover:opacity-80 transition-opacity"
-        >
-          <IconCloudUpload size={14} strokeWidth={1.5} />
-          Git Push
-        </button>
-        <button
-          onClick={loadInfo}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-sm rounded border hover:opacity-80 transition-opacity"
-          title="Refrescar información"
-        >
-          <IconRefresh size={14} strokeWidth={1.5} />
-        </button>
-      </div>
-
-      {/* Force pull confirmation */}
-      {confirmForcePull && (
-        <div className="mt-4 p-3 rounded border border-yellow-400 bg-yellow-50 dark:bg-yellow-900/20">
-          <p className="text-sm font-medium mb-1">¿Confirmar Force Pull?</p>
-          <p className="text-xs text-gray-500 mb-3">
-            Esto descartará <strong>todos los cambios locales</strong> en esta colección y la sincronizará
-            con <code>origin/{info.branch}</code>. Esta acción no se puede deshacer.
-          </p>
-          <div className="flex gap-2">
-            <button
-              onClick={handleForcePull}
-              className="px-3 py-1 text-xs rounded bg-yellow-500 text-white hover:bg-yellow-600 transition-colors"
-            >
-              Sí, descartar y actualizar
-            </button>
-            <button
-              onClick={() => setConfirmForcePull(false)}
-              className="px-3 py-1 text-xs rounded border hover:opacity-80 transition-opacity"
-            >
-              Cancelar
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Commit message dialog */}
-      {commitDialog && (
-        <div className="mt-4 p-3 rounded border bg-blue-50 dark:bg-blue-900/20">
-          <p className="text-sm font-medium mb-2">Hay cambios sin commitear</p>
-
-          {changedFiles.length > 0 && (
-            <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-1">
-                Archivos a commitear ({changedFiles.length}):
-              </p>
-              <div className="max-h-36 overflow-y-auto rounded border border-blue-200 dark:border-blue-700 bg-white dark:bg-gray-900 px-2 py-1">
-                {changedFiles.map((f, i) => (
-                  <div key={i} className="flex items-center gap-1.5 py-0.5">
-                    <span
-                      className="font-bold text-xs w-3 flex-shrink-0"
-                      style={{
-                        color:
-                          f.status === 'D'
-                            ? '#ef4444'
-                            : f.status === 'A' || f.status === '?'
-                              ? '#16a34a'
-                              : '#ca8a04'
-                      }}
-                    >
-                      {f.status === '?' ? 'A' : f.status}
-                    </span>
-                    <span className="text-xs font-mono text-gray-700 dark:text-gray-300 truncate" title={f.path}>
-                      {f.path}
-                    </span>
-                  </div>
-                ))}
+          {!confirmForcePull && !commitDialog && (
+            <div className="git-sync-actions">
+              <p className="git-sync-actions-label">Sincronizar</p>
+              <div className="git-sync-actions-buttons" role="toolbar" aria-label="Acciones Git">
+                <button type="button" className="git-sync-btn git-sync-btn--pull" onClick={handlePull}>
+                  <IconCloudDownload size={14} strokeWidth={1.75} />
+                  <span>Pull</span>
+                </button>
+                <button type="button" className="git-sync-btn git-sync-btn--push" onClick={handlePushClick}>
+                  <IconCloudUpload size={14} strokeWidth={1.75} />
+                  <span>Push</span>
+                </button>
+                <button
+                  type="button"
+                  className="git-sync-btn git-sync-btn--force"
+                  onClick={() => setConfirmForcePull(true)}
+                  title="Descarta cambios locales y sincroniza con el remoto"
+                >
+                  <IconAlertTriangle size={14} strokeWidth={1.75} />
+                  <span>Force</span>
+                </button>
+                <button
+                  type="button"
+                  className="git-sync-btn git-sync-btn--refresh"
+                  onClick={loadInfo}
+                  aria-label="Refrescar información del repositorio"
+                  title="Refrescar"
+                >
+                  <IconRefresh size={15} strokeWidth={1.65} />
+                </button>
               </div>
             </div>
           )}
 
-          <p className="text-xs text-gray-500 mb-2">Mensaje del commit:</p>
-          <input
-            type="text"
-            value={commitMessage}
-            onChange={(e) => setCommitMessage(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && commitMessage.trim()) handlePush(commitMessage.trim()); }}
-            className="w-full px-2 py-1.5 text-sm rounded border mb-2 bg-white dark:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-400"
-            placeholder="Mensaje del commit..."
-            autoFocus
-          />
-          <div className="flex gap-2">
-            <button
-              onClick={() => handlePush(commitMessage.trim() || commitMessage)}
-              disabled={!commitMessage.trim()}
-              className="px-3 py-1 text-xs rounded bg-blue-500 text-white hover:bg-blue-600 transition-colors disabled:opacity-40"
-            >
-              Commitear y subir
+          <div className="repo-details technical-panel">
+            <div className="detail-row">
+              <span className="detail-label">Rama</span>
+              <div className="detail-value">
+                <IconGitBranch size={14} strokeWidth={1.6} />
+                <span>{info.branch || 'Sin rama detectada'}</span>
+              </div>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Remoto</span>
+              <div className="detail-value detail-path" title={formatRemoteUrl(info.remoteUrl)}>
+                <IconLink size={14} strokeWidth={1.6} />
+                <span>{formatRemoteUrl(info.remoteUrl) || 'Sin remoto configurado'}</span>
+              </div>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">Ruta local</span>
+              <div className="detail-value detail-path" title={info.gitRootPath}>
+                <IconFolder size={14} strokeWidth={1.6} />
+                <span>{info.gitRootPath}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="signal-row signal-row-hero">
+            <StatusBadge status={info.ahead > 0 ? 'success' : 'muted'} size="sm" radius="full">
+              <IconArrowUp size={11} strokeWidth={2} />
+              {info.ahead} ahead
+            </StatusBadge>
+            <StatusBadge status={info.behind > 0 ? 'warning' : 'muted'} size="sm" radius="full">
+              <IconArrowDown size={11} strokeWidth={2} />
+              {info.behind} behind
+            </StatusBadge>
+          </div>
+        </section>
+      </section>
+
+      <section className="bottom-grid">
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h4>Historial reciente</h4>
+              <p>Lo último que entró por `auto-pull`, `pull` manual o `force pull`.</p>
+            </div>
+            {pendingBadges.length > 0 && (
+              <button className="action-button subtle" onClick={() => dispatch(clearGitChangeMarkers({ collectionUid: collection.uid }))}>
+                Limpiar marquillas
+              </button>
+            )}
+          </div>
+
+          {syncHistory.length ? (
+            <div className="history-list scroll-area">
+              {syncHistory.map((entry) => (
+                <div key={entry.id} className="history-row">
+                  <div className="history-meta">
+                    <div className="history-title-row">
+                      <div className="history-title">
+                        <IconHistory size={14} strokeWidth={1.7} />
+                        <span>{getSyncSourceLabel(entry.source)}</span>
+                      </div>
+                      <StatusBadge status={entry.hasChanges ? 'info' : 'muted'} size="xs" radius="full">
+                        {entry.changedFiles?.length || 0} cambio{(entry.changedFiles?.length || 0) !== 1 ? 's' : ''}
+                      </StatusBadge>
+                    </div>
+                    <p className="technical-text">{new Date(entry.pulledAt).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                  </div>
+
+                  {entry.changedFiles?.length ? (
+                    <div className="file-list compact-list file-list-divided">
+                      {entry.changedFiles.slice(0, 8).map((file) => {
+                        const state = getFileState(file.status);
+                        return (
+                          <div key={`${entry.id}-${file.absolutePath}`} className="file-row inline-row">
+                            <StatusBadge status={state.tone} size="xs" radius="full">
+                              {state.label}
+                            </StatusBadge>
+                            <span className="file-path" title={file.collectionRelativePath}>{file.collectionRelativePath}</span>
+                          </div>
+                        );
+                      })}
+                      {entry.changedFiles.length > 8 && (
+                        <p className="subtle">Y {entry.changedFiles.length - 8} cambio(s) más...</p>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="subtle">No llegaron archivos nuevos en esta sincronización.</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="subtle">Todavía no hay pulls registrados en esta sesión.</p>
+          )}
+        </section>
+
+        <section className="section-card">
+          <div className="section-header">
+            <div>
+              <h4>Cambios locales</h4>
+              <p>Archivos pendientes antes de hacer `push`.</p>
+            </div>
+            {uncommitted.length > 0 && (
+              <StatusBadge status="success" size="sm" radius="full">
+                {uncommitted.length} pendiente{uncommitted.length !== 1 ? 's' : ''}
+              </StatusBadge>
+            )}
+          </div>
+
+          {uncommitted.length ? (
+            <div className="file-list compact-scroll scroll-area file-list-divided">
+              {uncommitted.map((file, index) => {
+                const state = getFileState(file.status);
+                return (
+                  <div key={`${file.path}-${index}`} className="file-row inline-row">
+                    <StatusBadge status={state.tone} size="xs" radius="full">
+                      {state.label}
+                    </StatusBadge>
+                    <span className="file-path" title={file.path}>{file.path}</span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="empty-block">
+              <p className="subtle">No hay cambios locales sin commitear.</p>
+            </div>
+          )}
+        </section>
+      </section>
+
+      {confirmForcePull && (
+        <section className="section-card tone-warning">
+          <div className="section-header">
+            <div>
+              <h4>Confirmar Force Pull</h4>
+              <p>Esto descartará todo lo local y reemplazará la colección con `origin/{info.branch}`.</p>
+            </div>
+          </div>
+
+          <div className="actions-row">
+            <button onClick={handleForcePull} className="action-button warning">
+              Sí, descartar y actualizar
             </button>
-            <button
-              onClick={() => setCommitDialog(false)}
-              className="px-3 py-1 text-xs rounded border hover:opacity-80 transition-opacity"
-            >
+            <button onClick={() => setConfirmForcePull(false)} className="action-button neutral">
               Cancelar
             </button>
           </div>
-        </div>
+        </section>
       )}
-    </div>
+
+      {commitDialog && (
+        <section className="section-card tone-info">
+          <div className="section-header">
+            <div>
+              <h4>Preparar commit antes del push</h4>
+              <p>Vas a subir cambios locales; aquí se ve exactamente qué archivos van a entrar.</p>
+            </div>
+          </div>
+
+          {changedFiles.length > 0 && (
+            <div className="file-list compact-list">
+              {changedFiles.map((file, index) => {
+                const state = getFileState(file.status);
+                return (
+                  <div key={`${file.path}-${index}`} className="file-row">
+                    <StatusBadge status={state.tone} size="xs" radius="full">
+                      {state.label}
+                    </StatusBadge>
+                    <span className="file-path" title={file.path}>{file.path}</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          <label className="input-label" htmlFor="git-commit-message">Mensaje del commit</label>
+          <input
+            id="git-commit-message"
+            type="text"
+            value={commitMessage}
+            onChange={(e) => setCommitMessage(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && commitMessage.trim()) {
+                handlePush(commitMessage.trim());
+              }
+            }}
+            className="commit-input"
+            placeholder="Mensaje del commit..."
+            autoFocus
+          />
+
+          <div className="actions-row">
+            <button
+              onClick={() => handlePush(commitMessage.trim() || commitMessage)}
+              disabled={!commitMessage.trim()}
+              className="action-button primary"
+            >
+              Commitear y subir
+            </button>
+            <button onClick={() => setCommitDialog(false)} className="action-button neutral">
+              Cancelar
+            </button>
+          </div>
+        </section>
+      )}
+    </StyledWrapper>
   );
 };
 

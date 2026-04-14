@@ -188,9 +188,15 @@ const WsQueryUrl = ({ item, collection, handleRun }) => {
               </div>
             )}
 
-            <div data-testid="run-button" className="cursor-pointer" onClick={handleRunClick}>
-              <IconArrowRight color={theme.requestTabPanel.url.icon} strokeWidth={1.5} size={20} />
-            </div>
+            <button
+              type="button"
+              data-testid="run-button"
+              className="query-url-send-launch"
+              onClick={handleRunClick}
+              aria-label="Run WebSocket request"
+            >
+              <IconArrowRight color="currentColor" strokeWidth={1.5} size={18} />
+            </button>
           </div>
         </div>
       </div>

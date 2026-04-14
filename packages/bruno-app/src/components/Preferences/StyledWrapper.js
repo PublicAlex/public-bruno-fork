@@ -1,6 +1,18 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { rgba } from 'polished';
 
 const StyledWrapper = styled.div`
+  ${(props) =>
+    props.theme.mode === 'dark'
+    && css`
+      border-radius: ${props.theme.border.radius.lg};
+      background: ${rgba(props.theme.background.surface0, 0.4)};
+      border: 1px solid ${props.theme.border.border1};
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: ${props.theme.shadow.sm};
+    `}
+
   div.tabs {
     padding: 12px;
     min-width: 160px;

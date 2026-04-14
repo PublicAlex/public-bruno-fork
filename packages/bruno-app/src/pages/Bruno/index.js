@@ -119,7 +119,7 @@ export default function Main() {
           <div className="fixed bottom-0 left-0 right-0 z-10 bg-amber-100 border border-amber-400 text-amber-700 px-4 py-3" role="alert">
             <strong className="font-bold">WARNING:</strong>
             <div>
-              It looks like Bruno was launched as the Intel (x64) build under Rosetta on your Apple Silicon Mac. This can cause reduced performance and unexpected behavior.
+              It looks like Rebase was launched as the Intel (x64) build under Rosetta on your Apple Silicon Mac. This can cause reduced performance and unexpected behavior.
             </div>
             <button className="absolute right-2 top-0 text-xl" onClick={() => setShowRosettaBanner(!showRosettaBanner)}>
               &times;
@@ -137,7 +137,7 @@ export default function Main() {
       >
         <StyledWrapper className={className} style={{ height: '100%', zIndex: 1 }}>
           <Sidebar />
-          <section className="flex flex-grow flex-col overflow-hidden">
+          <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
             {showApiSpecPage && activeApiSpecUid ? (
               <ApiSpecPanel key={activeApiSpecUid} />
             ) : showManageWorkspacePage ? (

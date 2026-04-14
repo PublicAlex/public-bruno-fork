@@ -6,6 +6,8 @@ const Wrapper = styled.div`
 
   aside {
     background-color: ${(props) => props.theme.sidebar.bg};
+    border-right: 1px solid ${(props) => props.theme.border.border1};
+    box-shadow: inset -1px 0 0 ${(props) => props.theme.border.border0};
     overflow: hidden;
 
     .sidebar-sections-container {

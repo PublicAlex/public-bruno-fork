@@ -27,6 +27,6 @@ export const DOCUMENTATION_RESULT = {
   item: { id: 'docs', name: 'Rebase Documentation' },
   name: 'Rebase Documentation',
   path: '/',
-  description: 'Browse the official Bruno documentation',
+  description: 'Browse the official Rebase documentation',
   matchType: MATCH_TYPES.DOCUMENTATION
 };

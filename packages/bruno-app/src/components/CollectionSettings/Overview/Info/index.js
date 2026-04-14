@@ -32,9 +32,9 @@ const Info = ({ collection }) => {
       <div className="rounded-lg py-6">
         <div className="grid gap-5">
           {/* Location Row */}
-          <div className="flex items-start">
-            <div className="icon-box location flex-shrink-0 p-3 rounded-lg">
-              <IconFolder className="w-5 h-5" stroke={1.5} />
+          <div className="overview-info-row flex items-start">
+            <div className="icon-box location flex-shrink-0">
+              <IconFolder size={22} stroke={2} />
             </div>
             <div className="ml-4">
               <div className="font-medium">Location</div>
@@ -45,9 +45,9 @@ const Info = ({ collection }) => {
           </div>
 
           {/* Environments Row */}
-          <div className="flex items-start">
-            <div className="icon-box environments flex-shrink-0 p-3 rounded-lg">
-              <IconWorld className="w-5 h-5" stroke={1.5} />
+          <div className="overview-info-row flex items-start">
+            <div className="icon-box environments flex-shrink-0">
+              <IconWorld size={22} stroke={2} />
             </div>
             <div className="ml-4">
               <div className="font-medium">Environments</div>
@@ -87,9 +87,9 @@ const Info = ({ collection }) => {
           </div>
 
           {/* Requests Row */}
-          <div className="flex items-start">
-            <div className="icon-box requests flex-shrink-0 p-3 rounded-lg">
-              <IconApi className="w-5 h-5" stroke={1.5} />
+          <div className="overview-info-row flex items-start">
+            <div className="icon-box requests flex-shrink-0">
+              <IconApi size={22} stroke={2} />
             </div>
             <div className="ml-4">
               <div className="font-medium">Requests</div>
@@ -101,9 +101,9 @@ const Info = ({ collection }) => {
             </div>
           </div>
 
-          <div className="flex items-start group cursor-pointer" onClick={handleToggleShowShareCollectionModal(true)}>
-            <div className="icon-box share flex-shrink-0 p-3 rounded-lg">
-              <IconShare className="w-5 h-5" stroke={1.5} />
+          <div className="overview-info-row flex items-start group cursor-pointer" onClick={handleToggleShowShareCollectionModal(true)}>
+            <div className="icon-box share flex-shrink-0">
+              <IconShare size={22} stroke={2} />
             </div>
             <div className="ml-4 h-full flex flex-col justify-start">
               <div className="font-medium h-fit my-auto">Share</div>
@@ -114,9 +114,9 @@ const Info = ({ collection }) => {
           </div>
           {showShareCollectionModal && <ShareCollection collectionUid={collection.uid} onClose={handleToggleShowShareCollectionModal(false)} />}
 
-          <div className="flex items-start group cursor-pointer" onClick={() => setShowGenerateDocumentationModal(true)}>
-            <div className="icon-box generate-docs flex-shrink-0 p-3 rounded-lg">
-              <IconBook className="w-5 h-5" stroke={1.5} />
+          <div className="overview-info-row flex items-start group cursor-pointer" onClick={() => setShowGenerateDocumentationModal(true)}>
+            <div className="icon-box generate-docs flex-shrink-0">
+              <IconBook size={22} stroke={2} />
             </div>
             <div className="ml-4 h-full flex flex-col justify-start">
               <div className="font-medium h-fit my-auto">Documentation</div>

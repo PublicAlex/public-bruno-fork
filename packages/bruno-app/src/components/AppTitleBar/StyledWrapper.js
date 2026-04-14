@@ -1,10 +1,13 @@
 import styled from 'styled-components';
+import { rgba } from 'polished';
 
 const Wrapper = styled.div`
   height: 36px;
   display: flex;
   align-items: center;
   background: ${(props) => props.theme.sidebar.bg};
+  border-bottom: 1px solid ${(props) => props.theme.border.border1};
+  box-shadow: 0 1px 0 ${(props) => rgba(props.theme.brand, 0.06)};
   -webkit-app-region: drag;
   user-select: none;
 
@@ -78,7 +81,7 @@ const Wrapper = styled.div`
     }
   }
 
-  /* Center section - Bruno branding */
+  /* Center section — marca Rebase */
   .titlebar-center {
     position: absolute;
     left: 50%;

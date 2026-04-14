@@ -56,7 +56,7 @@ const getCollectionName = (format, rawData) => {
       // Fallback to root name property
       return rawData.name || 'Insomnia Collection';
     case 'bruno':
-      return rawData.name || 'Bruno Collection';
+      return rawData.name || 'Rebase Collection';
     case 'wsdl':
       return 'WSDL Collection';
     default:
@@ -822,7 +822,7 @@ export const BulkImportCollectionLocation = ({
                         <strong>OpenCollection (YAML):</strong> Industry-standard YAML format (.yml files)
                       </p>
                       <p className="mt-1">
-                        <strong>BRU:</strong> Bruno's native file format (.bru files)
+                        <strong>BRU:</strong> Rebase native file format (.bru files)
                       </p>
                     </Help>
                   </label>

@@ -41,7 +41,7 @@ const StyledWrapper = styled.div`
     padding: 6px 12px;
     border-radius: ${(props) => props.theme.border.radius.base};
     background: ${(props) => props.theme.brand};
-    color: white;
+    color: ${(props) => props.theme.button2?.color?.primary?.text || '#0f0d18'};
     font-size: ${(props) => props.theme.font.size.sm};
     font-weight: 500;
     cursor: pointer;

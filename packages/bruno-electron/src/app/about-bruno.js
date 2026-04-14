@@ -9,49 +9,55 @@ module.exports = function aboutBruno({ version }) {
         <title>About Rebase</title>
         <style>
             body {
-                font-family: Arial, sans-serif;
+                font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
                 text-align: center;
                 margin: 0;
-                padding: 10px;
-                background-color: #f4f4f4;
-                color: #333;
+                padding: 24px 16px;
+                background: radial-gradient(ellipse 120% 80% at 50% -20%, rgba(168, 85, 247, 0.22) 0%, transparent 55%),
+                    linear-gradient(180deg, #0f0d18 0%, #07060b 100%);
+                color: #f4f4f8;
             }
             .logo {
                 margin-top: 0px;
             }
             .title {
-                font-size: 24px;
-                margin-top: 5px;
-                font-weight: bold;
-                color: #222;
+                font-size: 22px;
+                margin-top: 12px;
+                font-weight: 700;
+                color: #fafafa;
+                letter-spacing: -0.02em;
             }
             .description {
                 font-size: 12px;
-                color: #222;
-                margin-top: 5px;
+                color: #c4b8dc;
+                margin-top: 8px;
             }
             .buttons {
                 margin-top: 5px;
             }
             .footer {
-                margin-top: 5px;
-                padding: 5px;
-                font-size: 14px;
-                color: #555;
+                margin-top: 16px;
+                padding: 8px;
+                font-size: 12px;
+                color: #9d8fb8;
             }
             .link {
                 display: inline-block;
-                margin-top: 10px;
-                padding: 10px 15px;
-                background-color: #F4AA41;
-                color: white;
+                margin-top: 14px;
+                padding: 10px 18px;
+                background: linear-gradient(135deg, #c084fc 0%, #e879f9 100%);
+                color: #0f0d18;
+                font-weight: 600;
                 text-decoration: none;
-                border-radius: 5px;
+                border-radius: 10px;
                 cursor: pointer;
-                transition: background 0.3s;
+                border: 1px solid rgba(255,255,255,0.12);
+                box-shadow: 0 4px 20px rgba(168, 85, 247, 0.35);
+                transition: transform 0.15s ease, box-shadow 0.15s ease;
             }
             .link:hover {
-                background-color: #F4AA41;
+                transform: translateY(-1px);
+                box-shadow: 0 6px 28px rgba(168, 85, 247, 0.45);
             }
         </style>
     </head>

@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { rgba } from 'polished';
 
 /**
  * Resolves status tokens from the theme.
@@ -65,9 +66,77 @@ const getVariantStyles = (props) => {
       return css`
         background: ${tokens.background};
         color: ${tokens.text};
-        border: 1px solid transparent;
+        border: 1px solid ${tokens.border};
       `;
   }
+};
+
+const statusGlow = (status) => {
+  switch (status) {
+    case 'success':
+      return 'rgba(52, 211, 153, 0.5)';
+    case 'info':
+      return 'rgba(56, 189, 248, 0.48)';
+    case 'warning':
+      return 'rgba(250, 204, 21, 0.5)';
+    case 'danger':
+      return 'rgba(251, 113, 133, 0.52)';
+    default:
+      return 'transparent';
+  }
+};
+
+/** Vidrio + halo neón en variantes claras (afecta badges en Git, sidebar, OpenAPI, etc.) */
+const neonSurface = (props) => {
+  const { $status, $variant } = props;
+  const variant = $variant || 'light';
+
+  if (variant === 'ghost') {
+    return '';
+  }
+
+  if ($status === 'muted') {
+    if (variant === 'light' || variant === 'outline') {
+      const soft
+        = props.theme.mode === 'dark'
+          ? rgba(168, 85, 247, 0.32)
+          : rgba(124, 58, 237, 0.22);
+      const inset = props.theme.mode === 'dark' ? rgba(255, 255, 255, 0.12) : rgba(255, 255, 255, 0.45);
+      return css`
+        backdrop-filter: blur(8px) saturate(1.35);
+        -webkit-backdrop-filter: blur(8px) saturate(1.35);
+        box-shadow:
+          inset 0 1px 0 ${inset},
+          0 0 14px -6px ${soft};
+      `;
+    }
+    return '';
+  }
+
+  const glow = statusGlow($status);
+  if (!glow || glow === 'transparent') {
+    return '';
+  }
+
+  if (variant === 'light' || variant === 'outline') {
+    return css`
+      backdrop-filter: blur(10px) saturate(1.5);
+      -webkit-backdrop-filter: blur(10px) saturate(1.5);
+      box-shadow:
+        inset 0 1px 0 ${rgba(255, 255, 255, 0.22)},
+        0 0 18px -5px ${glow};
+    `;
+  }
+
+  if (variant === 'filled') {
+    return css`
+      box-shadow:
+        inset 0 1px 0 ${rgba(255, 255, 255, 0.28)},
+        0 0 16px -4px ${glow};
+    `;
+  }
+
+  return '';
 };
 
 /**
@@ -114,12 +183,13 @@ const StyledWrapper = styled.div`
   align-items: center;
   position: relative;
   gap: 3px;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   cursor: default;
   border-radius: ${resolveRadius};
   ${(props) => sizeStyles[props.$size] || sizeStyles.sm}
   ${(props) => getVariantStyles(props)}
+  ${(props) => neonSurface(props)}
 `;
 
 export default StyledWrapper;

@@ -84,7 +84,7 @@ const FileTab = ({
         return;
       }
 
-      toastError(new Error('The ZIP file is not a valid Bruno collection'));
+      toastError(new Error('The ZIP file is not a valid Rebase collection'));
     } catch (err) {
       toastError(err, 'Import ZIP file failed');
     } finally {
@@ -271,7 +271,7 @@ const FileTab = ({
             </button>
           </p>
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-            Supports Bruno, OpenCollection, Postman, Insomnia, OpenAPI v3, WSDL, and ZIP formats
+            Supports Rebase, OpenCollection, Postman, Insomnia, OpenAPI v3, WSDL, and ZIP formats
           </p>
         </div>
       </div>

@@ -13,7 +13,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: space-between;
     padding: 1rem;
-    border-bottom: 1px solid ${(props) => props.theme.sidebar.dragbar};
+    border-bottom: 1px solid ${(props) => props.theme.sidebar.dragbar.border};
     margin-bottom: 0.5rem;
 
     .counter {
@@ -85,7 +85,7 @@ const StyledWrapper = styled.div`
     &.is-dragging {
       opacity: 0.5;
       background-color: ${(props) => props.theme.sidebar.bg};
-      border: 1px dashed ${(props) => props.theme.sidebar.dragbar};
+      border: 1px dashed ${(props) => props.theme.sidebar.dragbar.border};
       transform: scale(0.98);
       box-shadow: ${(props) => props.theme.shadow.md};
       z-index: 5;

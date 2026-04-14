@@ -6,12 +6,14 @@ import RequestsNotLoaded from './RequestsNotLoaded';
 
 const Overview = ({ collection }) => {
   return (
-    <div className="h-full">
+    <StyledWrapper className="h-full">
       <div className="grid grid-cols-5 gap-5 h-full">
         <div className="col-span-2">
-          <div className="text-lg font-medium flex items-center gap-2">
-            <IconBox size={20} stroke={1.5} />
-            {collection?.name}
+          <div className="overview-title-row text-lg font-medium">
+            <span className="overview-title-iconbox" aria-hidden="true">
+              <IconBox size={22} stroke={2} />
+            </span>
+            <span>{collection?.name}</span>
           </div>
           <Info collection={collection} />
           <RequestsNotLoaded collection={collection} />
@@ -20,7 +22,7 @@ const Overview = ({ collection }) => {
           <Docs collection={collection} />
         </div>
       </div>
-    </div>
+    </StyledWrapper>
   );
 };
 

@@ -224,6 +224,27 @@ const StyledWrapper = styled.div`
     ${(props) => roundedStyles[props.$rounded]}
     ${(props) => getVariantStyles(props.$variant, props.$color)}
 
+    ${(props) => {
+      if (props.theme.mode !== 'dark' || props.$variant !== 'filled') {
+        return '';
+      }
+      const colorKey = props.$color || 'primary';
+      const bg = props.theme.button2.color[colorKey]?.bg || props.theme.button2.color.primary.bg;
+      return css`
+        backdrop-filter: saturate(1.35);
+        -webkit-backdrop-filter: saturate(1.35);
+        box-shadow:
+          inset 0 1px 0 ${rgba(255, 255, 255, 0.22)},
+          0 0 24px -6px ${rgba(bg, 0.48)};
+
+        &:hover:not(:disabled) {
+          box-shadow:
+            inset 0 1px 0 ${rgba(255, 255, 255, 0.3)},
+            0 0 32px -5px ${rgba(bg, 0.55)};
+        }
+      `;
+    }}
+
     &:focus-visible {
       ${(props) => {
         const colorConfig = props.theme.button2.color[props.$color];
