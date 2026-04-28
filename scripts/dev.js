@@ -30,7 +30,7 @@ let electronProcess = null;
 let detectedPort = null;
 
 // Regex to match rsbuild's local URL output (e.g., "➜ Local:    http://localhost:3000/")
-// eslint-disable-next-line no-control-regex
+ 
 const portRegex = /Local:[\s\x1B\[\d;m]+http:\/\/localhost:(\d+)/;
 
 console.log(`\n${colors.bright}${colors.yellow}🚀 Starting Bruno development environment...${colors.reset}\n`);
@@ -42,7 +42,7 @@ const webProcess = spawn('npm', ['run', 'dev'], {
   shell: true
 });
 
-// eslint-disable-next-line no-control-regex
+ 
 const readyRegex = /ready\s+Built in/;
 
 webProcess.stdout.on('data', (data) => {
@@ -83,6 +83,8 @@ function startElectron(port) {
     env: {
       ...process.env,
       BRUNO_DEV_PORT: port,
+      // Windows: evita fallos raros de Crashpad / códigos de salida anómalos al iniciar.
+      ELECTRON_DISABLE_CRASH_REPORTING: '1',
       // Unset ELECTRON_RUN_AS_NODE so Electron runs as a full app, not a Node.js shim.
       // VSCode/Claude Code terminals inherit this variable which breaks require('electron').
       ELECTRON_RUN_AS_NODE: undefined

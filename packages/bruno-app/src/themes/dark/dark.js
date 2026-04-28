@@ -1,31 +1,31 @@
 import { rgba, lighten } from 'polished';
 
-/** Dark Glass — fondos cálidos violeta-negro, acentos violeta/rosa y verdes suaves */
+/** Dark Glass — acentos y pills menos saturados (legibles sin aspecto neón) */
 export const palette = {
   primary: {
-    SOLID: '#c084fc',
-    TEXT: '#e9d5ff',
-    STRONG: '#a855f7',
-    SUBTLE: 'rgba(168, 85, 247, 0.5)'
+    SOLID: '#a894d4',
+    TEXT: '#e8e2f4',
+    STRONG: '#8f7ab8',
+    SUBTLE: 'rgba(148, 132, 188, 0.48)'
   },
   hues: {
-    RED: 'hsl(8, 72%, 58%)',
-    ROSE: 'hsl(330, 78%, 72%)',
-    BROWN: 'hsl(32, 58%, 68%)',
-    ORANGE: 'hsl(28, 88%, 68%)',
-    YELLOW: 'hsl(45, 92%, 68%)',
-    GREEN: 'hsl(152, 65%, 52%)',
-    GREEN_DARK: 'hsl(158, 78%, 42%)',
-    TEAL: 'hsl(172, 58%, 52%)',
-    CYAN: 'hsl(192, 78%, 62%)',
-    BLUE: 'hsl(217, 88%, 70%)',
-    INDIGO: 'hsl(239, 72%, 70%)',
-    VIOLET: 'hsl(263, 78%, 72%)',
-    PURPLE: 'hsl(280, 72%, 72%)',
-    PINK: 'hsl(320, 72%, 72%)'
+    RED: 'hsl(8, 48%, 56%)',
+    ROSE: 'hsl(330, 46%, 70%)',
+    BROWN: 'hsl(32, 38%, 64%)',
+    ORANGE: 'hsl(28, 52%, 62%)',
+    YELLOW: 'hsl(45, 54%, 64%)',
+    GREEN: 'hsl(152, 38%, 50%)',
+    GREEN_DARK: 'hsl(158, 42%, 40%)',
+    TEAL: 'hsl(172, 38%, 50%)',
+    CYAN: 'hsl(192, 42%, 62%)',
+    BLUE: 'hsl(217, 48%, 66%)',
+    INDIGO: 'hsl(239, 44%, 66%)',
+    VIOLET: 'hsl(263, 42%, 70%)',
+    PURPLE: 'hsl(280, 40%, 70%)',
+    PINK: 'hsl(320, 42%, 70%)'
   },
   system: {
-    CONTROL_ACCENT: '#c084fc'
+    CONTROL_ACCENT: '#a894d4'
   },
   background: {
     BASE: '#07060b',
@@ -89,8 +89,8 @@ const darkTheme = {
   mode: 'dark',
   brand: palette.primary.SOLID,
   text: palette.text.BASE,
-  textLink: palette.hues.CYAN,
-  draftColor: '#f0ab5c',
+  textLink: 'hsl(197, 36%, 72%)',
+  draftColor: '#d4a574',
   bg: palette.background.BASE,
 
   primary: {
@@ -113,27 +113,27 @@ const darkTheme = {
     surface2: colors.GRAY_4
   },
 
-  /* Badges / chips neón: fondos más densos, texto y borde más luminosos */
+  /* Pills / chips: tintes suaves, sin bordes neón */
   status: {
     info: {
-      background: rgba(56, 189, 248, 0.26),
-      text: '#7dd3fc',
-      border: rgba(125, 211, 252, 0.72)
+      background: rgba(56, 189, 248, 0.12),
+      text: '#9ec9e0',
+      border: rgba(125, 211, 252, 0.32)
     },
     success: {
-      background: rgba(52, 211, 153, 0.26),
-      text: '#6ee7b7',
-      border: rgba(167, 243, 208, 0.65)
+      background: rgba(52, 211, 153, 0.12),
+      text: '#8ec4ae',
+      border: rgba(167, 243, 208, 0.34)
     },
     warning: {
-      background: rgba(251, 191, 36, 0.28),
-      text: '#fde047',
-      border: rgba(253, 224, 71, 0.75)
+      background: rgba(251, 191, 36, 0.14),
+      text: '#d8c98a',
+      border: rgba(253, 224, 71, 0.38)
     },
     danger: {
-      background: rgba(251, 113, 133, 0.26),
-      text: '#fda4af',
-      border: rgba(254, 205, 211, 0.72)
+      background: rgba(251, 113, 133, 0.12),
+      text: '#d9aeb8',
+      border: rgba(254, 205, 211, 0.36)
     }
   },
 
@@ -155,9 +155,9 @@ const darkTheme = {
   },
 
   shadow: {
-    sm: `0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 1px ${rgba(168, 85, 247, 0.08)}`,
-    md: `0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px ${rgba(168, 85, 247, 0.1)}`,
-    lg: `0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px ${rgba(168, 85, 247, 0.12)}`
+    sm: `0 1px 2px rgba(0, 0, 0, 0.45), 0 0 0 1px ${rgba(148, 132, 188, 0.08)}`,
+    md: `0 4px 16px rgba(0, 0, 0, 0.55), 0 0 0 1px ${rgba(148, 132, 188, 0.1)}`,
+    lg: `0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px ${rgba(148, 132, 188, 0.12)}`
   },
 
   border: {
@@ -209,17 +209,17 @@ const darkTheme = {
     bg: palette.background.MANTLE,
     dragbar: {
       border: palette.border.BORDER1,
-      activeBorder: rgba(192, 132, 252, 0.45)
+      activeBorder: rgba(170, 158, 208, 0.45)
     },
 
     collection: {
       item: {
         bg: palette.background.SURFACE0,
-        hoverBg: rgba(168, 85, 247, 0.12),
+        hoverBg: rgba(148, 132, 188, 0.12),
         focusBorder: palette.border.BORDER2,
         indentBorder: palette.background.SURFACE0,
         active: {
-          indentBorder: rgba(168, 85, 247, 0.35)
+          indentBorder: rgba(148, 132, 188, 0.35)
         },
         example: {
           iconColor: palette.text.BASE
@@ -236,7 +236,7 @@ const darkTheme = {
     color: palette.text.BASE,
     iconColor: palette.text.SUBTEXT2,
     bg: rgba(22, 19, 33, 0.96),
-    hoverBg: rgba(168, 85, 247, 0.12),
+    hoverBg: rgba(148, 132, 188, 0.12),
     shadow: `0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px ${rgba(255, 255, 255, 0.06)}`,
     border: palette.border.BORDER1,
     separator: palette.border.BORDER1,
@@ -272,12 +272,12 @@ const darkTheme = {
     url: {
       bg: palette.background.BASE,
       icon: palette.text.SUBTEXT2,
-      iconDanger: '#fb7185',
+      iconDanger: '#d498a3',
       border: `solid 1px ${palette.border.BORDER1}`
     },
     dragbar: {
       border: palette.border.BORDER1,
-      activeBorder: rgba(192, 132, 252, 0.5)
+      activeBorder: rgba(170, 158, 208, 0.5)
     },
     responseStatus: palette.text.SUBTEXT2,
     responseOk: palette.hues.GREEN,
@@ -303,11 +303,11 @@ const darkTheme = {
       bg: palette.background.SURFACE0,
       borderRight: palette.border.BORDER2,
       borderBottom: palette.border.BORDER2,
-      hoverBg: rgba(168, 85, 247, 0.1),
+      hoverBg: rgba(148, 132, 188, 0.1),
       active: {
         border: palette.primary.STRONG,
-        bg: rgba(168, 85, 247, 0.15),
-        hoverBg: rgba(168, 85, 247, 0.18)
+        bg: rgba(148, 132, 188, 0.15),
+        hoverBg: rgba(148, 132, 188, 0.18)
       }
     }
   },
@@ -335,8 +335,8 @@ const darkTheme = {
     secondary: {
       color: palette.text.BASE,
       bg: palette.background.SURFACE1,
-      border: rgba(192, 132, 252, 0.28),
-      hoverBorder: rgba(192, 132, 252, 0.5)
+      border: rgba(170, 158, 208, 0.28),
+      hoverBorder: rgba(170, 158, 208, 0.5)
     },
     close: {
       color: palette.text.SUBTEXT2,
@@ -358,34 +358,34 @@ const darkTheme = {
   button2: {
     color: {
       primary: {
-        bg: '#e879f9',
-        text: '#0c0614',
-        border: '#f5d0fe'
+        bg: '#b8a0d8',
+        text: '#120d1c',
+        border: '#ddd4ee'
       },
       light: {
-        bg: rgba('#e879f9', 0.2),
-        text: '#fae8ff',
-        border: rgba('#f0abfc', 0.45)
+        bg: 'rgba(200, 176, 232, 0.2)',
+        text: '#f0eaf8',
+        border: 'rgba(190, 168, 220, 0.42)'
       },
       secondary: {
         bg: rgba(255, 255, 255, 0.08),
         text: palette.text.BASE,
-        border: rgba(192, 132, 252, 0.35)
+        border: rgba(170, 158, 208, 0.35)
       },
       success: {
-        bg: '#34d399',
-        text: '#022c1c',
-        border: '#6ee7b7'
+        bg: '#5aa88a',
+        text: '#0a1812',
+        border: '#9cc9b6'
       },
       warning: {
-        bg: '#fb923c',
-        text: '#1c0a01',
-        border: '#fdba74'
+        bg: '#c9925e',
+        text: '#1a120a',
+        border: '#dfc4a8'
       },
       danger: {
-        bg: '#fb7185',
-        text: '#fff1f2',
-        border: '#fecdd3'
+        bg: '#c98692',
+        text: '#fdf6f7',
+        border: '#e8ccd1'
       }
     }
   },
@@ -416,7 +416,7 @@ const darkTheme = {
     icon: {
       color: palette.text.SUBTEXT1,
       hoverColor: palette.text.BASE,
-      hoverBg: rgba(168, 85, 247, 0.12)
+      hoverBg: rgba(148, 132, 188, 0.12)
     },
     example: {
       iconColor: colors.GRAY_5
@@ -451,9 +451,9 @@ const darkTheme = {
       tag: palette.syntax.TAG,
       tagBracket: palette.syntax.TAG_BRACKET
     },
-    searchLineHighlightCurrent: 'rgba(168, 85, 247, 0.15)',
-    searchMatch: '#fde047',
-    searchMatchActive: '#fef08a'
+    searchLineHighlightCurrent: 'rgba(148, 132, 188, 0.15)',
+    searchMatch: '#cfc06e',
+    searchMatchActive: '#ddd18a'
   },
 
   table: {
@@ -472,19 +472,19 @@ const darkTheme = {
   },
 
   scrollbar: {
-    color: 'rgba(168, 132, 220, 0.35)'
+    color: 'rgba(150, 142, 188, 0.32)'
   },
 
   dragAndDrop: {
     border: palette.border.BORDER2,
     borderStyle: '2px solid',
-    hoverBg: rgba(168, 85, 247, 0.08),
+    hoverBg: rgba(148, 132, 188, 0.08),
     transition: 'all 0.1s ease'
   },
   infoTip: {
     bg: rgba(22, 19, 33, 0.96),
     border: palette.border.BORDER1,
-    boxShadow: `0 8px 28px rgba(0, 0, 0, 0.55), 0 0 0 1px ${rgba(168, 85, 247, 0.12)}`
+    boxShadow: `0 8px 28px rgba(0, 0, 0, 0.55), 0 0 0 1px ${rgba(148, 132, 188, 0.12)}`
   },
 
   statusBar: {
@@ -500,7 +500,7 @@ const darkTheme = {
     titleColor: palette.text.BASE,
     countColor: palette.text.SUBTEXT1,
     buttonColor: palette.text.SUBTEXT2,
-    buttonHoverBg: rgba(168, 85, 247, 0.12),
+    buttonHoverBg: rgba(148, 132, 188, 0.12),
     buttonHoverColor: palette.text.BASE,
     messageColor: palette.text.BASE,
     timestampColor: palette.text.SUBTEXT1,
@@ -510,13 +510,13 @@ const darkTheme = {
     resizeHandleActive: palette.primary.STRONG,
     dropdownBg: palette.background.SURFACE0,
     dropdownHeaderBg: palette.background.CRUST,
-    optionHoverBg: rgba(168, 85, 247, 0.1),
+    optionHoverBg: rgba(148, 132, 188, 0.1),
     optionLabelColor: palette.text.BASE,
     optionCountColor: palette.text.SUBTEXT1,
     checkboxColor: palette.primary.SOLID,
     scrollbarTrack: palette.background.MANTLE,
-    scrollbarThumb: 'rgba(168, 132, 220, 0.35)',
-    scrollbarThumbHover: 'rgba(192, 132, 252, 0.5)'
+    scrollbarThumb: 'rgba(150, 142, 188, 0.32)',
+    scrollbarThumbHover: 'rgba(170, 158, 208, 0.42)'
   },
 
   grpc: {
@@ -545,15 +545,15 @@ const darkTheme = {
       },
       error: {
         bg: 'transparent',
-        text: '#fb7185',
+        text: '#d98a96',
         link: {
-          color: '#fb7185',
+          color: '#d98a96',
           hoverColor: '#fda4af'
         }
       },
       item: {
         bg: 'transparent',
-        hoverBg: rgba(168, 85, 247, 0.08),
+        hoverBg: rgba(148, 132, 188, 0.08),
         text: palette.text.BASE,
         icon: palette.text.SUBTEXT1,
         checkbox: {
@@ -561,7 +561,7 @@ const darkTheme = {
         },
         invalid: {
           opacity: 0.6,
-          text: '#fb7185'
+          text: '#d98a96'
         }
       },
       empty: {
@@ -570,8 +570,8 @@ const darkTheme = {
       button: {
         bg: palette.background.SURFACE1,
         color: palette.text.BASE,
-        border: rgba(192, 132, 252, 0.35),
-        hoverBorder: rgba(192, 132, 252, 0.55)
+        border: rgba(170, 158, 208, 0.35),
+        hoverBorder: rgba(170, 158, 208, 0.55)
       }
     },
     protoFiles: {
@@ -584,17 +584,17 @@ const darkTheme = {
       },
       error: {
         bg: 'transparent',
-        text: '#fb7185',
+        text: '#d98a96',
         link: {
-          color: '#fb7185',
+          color: '#d98a96',
           hoverColor: '#fda4af'
         }
       },
       item: {
         bg: 'transparent',
-        hoverBg: rgba(168, 85, 247, 0.08),
+        hoverBg: rgba(148, 132, 188, 0.08),
         selected: {
-          bg: rgba(168, 85, 247, 0.2),
+          bg: rgba(148, 132, 188, 0.2),
           border: palette.primary.SOLID
         },
         text: palette.text.BASE,
@@ -602,7 +602,7 @@ const darkTheme = {
         icon: palette.text.SUBTEXT1,
         invalid: {
           opacity: 0.6,
-          text: '#fb7185'
+          text: '#d98a96'
         }
       },
       empty: {
@@ -611,20 +611,20 @@ const darkTheme = {
       button: {
         bg: palette.background.SURFACE1,
         color: palette.text.BASE,
-        border: rgba(192, 132, 252, 0.35),
-        hoverBorder: rgba(192, 132, 252, 0.55)
+        border: rgba(170, 158, 208, 0.35),
+        hoverBorder: rgba(170, 158, 208, 0.55)
       }
     }
   },
   deprecationWarning: {
     bg: 'rgba(251, 113, 133, 0.12)',
     border: 'rgba(251, 113, 133, 0.2)',
-    icon: '#fb7185',
+    icon: '#d98a96',
     text: palette.text.SUBTEXT2
   },
 
   examples: {
-    buttonBg: rgba(192, 132, 252, 0.14),
+    buttonBg: rgba(170, 158, 208, 0.14),
     buttonColor: palette.primary.SOLID,
     buttonText: '#fff',
     buttonIconColor: '#fff',
@@ -671,7 +671,7 @@ const darkTheme = {
             color: palette.hues.GREEN
           },
           developerMode: {
-            bg: rgba(192, 132, 252, 0.14),
+            bg: rgba(170, 158, 208, 0.14),
             color: palette.hues.YELLOW
           }
         }

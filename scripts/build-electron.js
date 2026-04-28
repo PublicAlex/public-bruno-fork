@@ -78,18 +78,17 @@ async function main() {
     await fs.ensureDir('packages/bruno-electron/web');
     console.log('The directory has been created successfully!');
 
+    // Verify web build exists before copying – if dist/index.html is missing the user
+    // probably ran dev:web (starts the dev server) instead of build:web.
+    const distIndex = path.join('packages/bruno-app/dist/index.html');
+    if (!fs.existsSync(distIndex)) {
+      console.error('\n❌  packages/bruno-app/dist/index.html not found.');
+      console.error('   Run  npm run build:web  first, then re-run build:electron.\n');
+      process.exit(1);
+    }
+
     // Copy build
     await copyFolderIfExists('packages/bruno-app/dist', 'packages/bruno-electron/web');
-
-    // Update static paths
-    const files = await fs.readdir('packages/bruno-electron/web');
-    for (const file of files) {
-      if (file.endsWith('.html')) {
-        let content = await fs.readFile(`packages/bruno-electron/web/${file}`, 'utf8');
-        content = content.replace(/\/static/g, './static');
-        await fs.writeFile(`packages/bruno-electron/web/${file}`, content);
-      }
-    }
 
     // update font load paths
     const cssDir = path.join('packages/bruno-electron/web/static/css');
