@@ -1,29 +1,29 @@
 import { rgba } from 'polished';
 export const palette = {
   primary: {
-    SOLID: '#7c3aed',
-    TEXT: '#6d28d9',
-    STRONG: '#5b21b6',
-    SUBTLE: 'rgba(124, 58, 237, 0.45)'
+    SOLID: '#6d5a9e',
+    TEXT: '#4f4378',
+    STRONG: '#3f365f',
+    SUBTLE: 'rgba(109, 90, 158, 0.38)'
   },
   hues: {
-    RED: 'hsl(8,   60%, 52%)',
-    ROSE: 'hsl(352, 45%, 50%)',
-    BROWN: 'hsl(28,  55%, 38%)',
-    ORANGE: 'hsl(35,  85%, 42%)',
-    YELLOW: 'hsl(45,  75%, 42%)',
-    LIME: 'hsl(85,  45%, 40%)',
-    GREEN: 'hsl(145, 50%, 36%)',
-    TEAL: 'hsl(178, 50%, 36%)',
-    CYAN: 'hsl(195, 55%, 42%)',
-    BLUE: 'hsl(214, 55%, 45%)',
-    INDIGO: 'hsl(235, 45%, 45%)',
-    VIOLET: 'hsl(258, 42%, 50%)',
-    PURPLE: 'hsl(280, 45%, 48%)',
-    PINK: 'hsl(328, 50%, 48%)'
+    RED: 'hsl(8,   48%, 50%)',
+    ROSE: 'hsl(352, 38%, 48%)',
+    BROWN: 'hsl(28,  42%, 38%)',
+    ORANGE: 'hsl(35,  52%, 40%)',
+    YELLOW: 'hsl(45,  52%, 40%)',
+    LIME: 'hsl(85,  38%, 38%)',
+    GREEN: 'hsl(145, 40%, 34%)',
+    TEAL: 'hsl(178, 40%, 34%)',
+    CYAN: 'hsl(195, 42%, 40%)',
+    BLUE: 'hsl(214, 44%, 44%)',
+    INDIGO: 'hsl(235, 38%, 44%)',
+    VIOLET: 'hsl(258, 36%, 48%)',
+    PURPLE: 'hsl(280, 38%, 46%)',
+    PINK: 'hsl(328, 40%, 46%)'
   },
   system: {
-    CONTROL_ACCENT: '#7c3aed'
+    CONTROL_ACCENT: '#6d5a9e'
   },
   background: {
     BASE: '#ffffff',
@@ -114,24 +114,24 @@ const lightTheme = {
 
   status: {
     info: {
-      background: rgba(2, 132, 199, 0.2),
-      text: '#0369a1',
-      border: rgba(14, 165, 233, 0.85)
+      background: rgba(2, 132, 199, 0.12),
+      text: '#0c5c82',
+      border: rgba(14, 165, 233, 0.38)
     },
     success: {
-      background: rgba(5, 122, 85, 0.18),
-      text: '#047857',
-      border: rgba(16, 185, 129, 0.85)
+      background: rgba(5, 122, 85, 0.1),
+      text: '#0d5c44',
+      border: rgba(16, 185, 129, 0.36)
     },
     warning: {
-      background: rgba(217, 119, 6, 0.2),
-      text: '#b45309',
-      border: rgba(245, 158, 11, 0.9)
+      background: rgba(217, 119, 6, 0.12),
+      text: '#8a4a0c',
+      border: rgba(245, 158, 11, 0.4)
     },
     danger: {
-      background: rgba(225, 29, 72, 0.16),
-      text: '#be123c',
-      border: rgba(244, 63, 94, 0.88)
+      background: rgba(225, 29, 72, 0.1),
+      text: '#9f1235',
+      border: rgba(244, 63, 94, 0.38)
     }
   },
 

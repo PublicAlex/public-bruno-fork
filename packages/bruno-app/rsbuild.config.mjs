@@ -5,9 +5,17 @@ import { pluginStyledComponents } from '@rsbuild/plugin-styled-components';
 import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill'
 
-export default defineConfig({
+export default defineConfig(({ env }) => ({
   server: {
     port: 4003
+  },
+  /*
+   * Electron empaquetado carga index.html con file://. Si __webpack_require__.p es "/",
+   * los chunks e imágenes piden "/static/..." → raíz del disco → pantalla en blanco.
+   * En producción forzamos prefijo relativo; en dev debe ser "/" para el servidor Rsbuild.
+   */
+  output: {
+    assetPrefix: env === 'development' ? '/' : './'
   },
   plugins: [
     pluginNodePolyfill(),
@@ -54,4 +62,4 @@ export default defineConfig({
       }
     },
   }
-});
+}));

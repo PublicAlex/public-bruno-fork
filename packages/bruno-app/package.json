@@ -4,9 +4,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "rsbuild dev",
-    "build": "rsbuild build -m production",
-    "preview": "rsbuild preview",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=8192 rsbuild dev",
+    "dev:low-mem": "cross-env NODE_OPTIONS=--max-old-space-size=4096 rsbuild dev",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=8192 rsbuild build -m production",
+    "preview": "cross-env NODE_OPTIONS=--max-old-space-size=4096 rsbuild preview",
     "test": "jest",
     "storybook": "storybook dev -p 6006 --config-dir storybook",
     "build-storybook": "storybook build --config-dir storybook"

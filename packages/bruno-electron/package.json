@@ -7,8 +7,8 @@
   "author": "Alexander Aragonés Silva <aragonantar@gmail.com> (https://github.com/PublicAlex/)",
   "scripts": {
     "clean": "rimraf dist",
-    "dev": "electron .",
-    "debug": "electron . --inspect=9229",
+    "dev": "cross-env ELECTRON_DISABLE_CRASH_REPORTING=1 electron .",
+    "debug": "cross-env ELECTRON_DISABLE_CRASH_REPORTING=1 electron . --inspect=9229",
     "dist:mac": "electron-builder --mac --config electron-builder-config.js",
     "dist:win": "electron-builder --win --config electron-builder-config.js",
     "dist:linux": "electron-builder --linux AppImage --config electron-builder-config.js",
@@ -76,6 +76,7 @@
     "dmg-license": "^1.0.11"
   },
   "devDependencies": {
+    "cross-env": "10.1.0",
     "electron": "~37.6.1",
     "electron-builder": "^24.13.3",
     "electron-devtools-installer": "^4.0.0"

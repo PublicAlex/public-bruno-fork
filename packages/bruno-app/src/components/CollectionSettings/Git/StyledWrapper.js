@@ -19,14 +19,11 @@ const StyledWrapper = styled.div`
   .section-card,
   .summary-banner,
   .repo-details {
-    background: ${(props) => rgba(props.theme.background.surface0, 0.48)};
-    border: 1px solid ${rgba(192, 132, 252, 0.32)};
-    box-shadow:
-      ${(props) => props.theme.shadow.md},
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.1)},
-      0 0 56px -20px ${rgba(168, 85, 247, 0.35)};
-    backdrop-filter: blur(22px) saturate(1.35);
-    -webkit-backdrop-filter: blur(22px) saturate(1.35);
+    background: ${(props) => rgba(props.theme.background.surface0, 0.75)};
+    border: 1px solid ${(props) => props.theme.border.border1};
+    box-shadow: ${(props) => props.theme.shadow.sm};
+    backdrop-filter: blur(10px) saturate(1.05);
+    -webkit-backdrop-filter: blur(10px) saturate(1.05);
   }
 
   .page-header,
@@ -89,9 +86,9 @@ const StyledWrapper = styled.div`
     gap: 8px;
     padding: 10px 12px;
     border-radius: ${(props) => props.theme.border.radius.md};
-    border: 1px solid ${rgba(167, 139, 250, 0.28)};
-    background: ${rgba('#0f0820', 0.55)};
-    box-shadow: inset 0 1px 0 ${rgba(255, 255, 255, 0.06)};
+    border: 1px solid ${(props) => props.theme.border.border1};
+    background: ${(props) => rgba(props.theme.background.mantle, 0.65)};
+    box-shadow: inset 0 1px 0 ${rgba(255, 255, 255, 0.04)};
   }
 
   .git-sync-actions-label {
@@ -127,12 +124,12 @@ const StyledWrapper = styled.div`
       transform 0.12s ease,
       filter 0.12s ease,
       box-shadow 0.12s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .git-sync-btn:hover {
     transform: translateY(-1px);
-    filter: brightness(1.05);
+    filter: brightness(1.03);
   }
 
   .git-sync-btn:active {
@@ -140,36 +137,34 @@ const StyledWrapper = styled.div`
   }
 
   .git-sync-btn--pull {
-    color: #120618;
-    background: linear-gradient(135deg, #f0abfc 0%, #c026d3 42%, #7c3aed 100%);
-    border-color: ${rgba(250, 232, 255, 0.45)};
-    box-shadow:
-      0 0 16px -2px rgba(236, 72, 153, 0.55),
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.35)};
+    color: ${(props) => props.theme.text};
+    background: ${(props) => rgba(props.theme.primary.solid, 0.14)};
+    border-color: ${(props) => rgba(props.theme.primary.solid, 0.35)};
+    box-shadow: none;
   }
 
   .git-sync-btn--push {
-    color: #ecfeff;
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.95) 0%, rgba(8, 145, 178, 0.98) 100%);
-    border-color: rgba(165, 243, 252, 0.55);
-    box-shadow: 0 0 14px -2px rgba(34, 211, 238, 0.45);
+    color: ${(props) => props.theme.status.info.text};
+    background: ${(props) => props.theme.status.info.background};
+    border-color: ${(props) => rgba(props.theme.status.info.border, 0.45)};
+    box-shadow: none;
   }
 
   .git-sync-btn--force {
-    color: #fffbeb;
-    background: linear-gradient(135deg, rgba(251, 146, 60, 0.95) 0%, rgba(194, 65, 12, 0.98) 100%);
-    border-color: rgba(254, 215, 170, 0.5);
-    box-shadow: 0 0 14px -2px rgba(251, 146, 60, 0.45);
+    color: ${(props) => props.theme.status.warning.text};
+    background: ${(props) => props.theme.status.warning.background};
+    border-color: ${(props) => rgba(props.theme.status.warning.border, 0.4)};
+    box-shadow: none;
   }
 
   .git-sync-btn--refresh {
     width: 30px;
     min-width: 30px;
     padding: 0;
-    color: #f5e1ff;
-    background: ${rgba('#1e1b4b', 0.75)};
-    border-color: ${rgba(192, 132, 252, 0.45)};
-    box-shadow: inset 0 1px 0 ${rgba(255, 255, 255, 0.08)};
+    color: ${(props) => props.theme.colors.text.subtext2};
+    background: ${(props) => rgba(props.theme.background.surface1, 0.85)};
+    border-color: ${(props) => props.theme.border.border2};
+    box-shadow: inset 0 1px 0 ${rgba(255, 255, 255, 0.05)};
   }
 
   .signal-row-hero {
@@ -181,8 +176,7 @@ const StyledWrapper = styled.div`
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #f0abfc;
-    text-shadow: 0 0 28px rgba(236, 72, 153, 0.45);
+    color: ${(props) => props.theme.colors.text.muted};
   }
 
   h3,
@@ -241,21 +235,21 @@ const StyledWrapper = styled.div`
   }
 
   .summary-banner.warning {
-    border-color: rgba(251, 191, 36, 0.55);
-    color: #fde68a;
-    background: ${(props) => rgba('#451a03', 0.35)};
+    border-color: ${(props) => rgba(props.theme.status.warning.border, 0.35)};
+    color: ${(props) => props.theme.status.warning.text};
+    background: ${(props) => props.theme.status.warning.background};
   }
 
   .summary-banner.success {
-    border-color: rgba(52, 211, 153, 0.55);
-    color: #86efac;
-    background: ${(props) => rgba('#052e16', 0.35)};
+    border-color: ${(props) => rgba(props.theme.status.success.border, 0.35)};
+    color: ${(props) => props.theme.status.success.text};
+    background: ${(props) => props.theme.status.success.background};
   }
 
   .summary-banner.muted {
-    color: #d8b4fe;
-    background: ${(props) => rgba('#2e1065', 0.28)};
-    border-color: ${rgba(167, 139, 250, 0.35)};
+    color: ${(props) => props.theme.colors.text.subtext2};
+    background: ${(props) => rgba(props.theme.background.mantle, 0.65)};
+    border-color: ${(props) => props.theme.border.border1};
   }
 
   .summary-banner svg {
@@ -263,18 +257,18 @@ const StyledWrapper = styled.div`
   }
 
   .summary-banner.warning svg {
-    color: #fde047;
-    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.65));
+    color: ${(props) => props.theme.status.warning.text};
+    opacity: 0.9;
   }
 
   .summary-banner.success svg {
-    color: #6ee7b7;
-    filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.58));
+    color: ${(props) => props.theme.status.success.text};
+    opacity: 0.9;
   }
 
   .summary-banner.muted svg {
-    color: #f5e1ff;
-    filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.55));
+    color: ${(props) => props.theme.colors.text.muted};
+    opacity: 0.85;
   }
 
   .metrics-grid {
@@ -293,49 +287,35 @@ const StyledWrapper = styled.div`
     justify-content: space-between;
     gap: 6px;
     overflow: hidden;
-    backdrop-filter: blur(16px) saturate(1.65);
-    -webkit-backdrop-filter: blur(16px) saturate(1.65);
+    backdrop-filter: blur(8px) saturate(1.05);
+    -webkit-backdrop-filter: blur(8px) saturate(1.05);
     border-width: 1px;
     border-style: solid;
-    box-shadow:
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.22)},
-      0 10px 28px rgba(0, 0, 0, 0.4);
+    box-shadow: ${(props) => props.theme.shadow.sm};
   }
 
   .metric-card--ahead {
-    background: linear-gradient(148deg, rgba(244, 114, 182, 0.95) 0%, rgba(192, 38, 211, 0.92) 45%, rgba(109, 40, 217, 0.94) 100%);
-    border-color: ${rgba(253, 242, 248, 0.55)};
-    box-shadow:
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.28)},
-      0 0 28px -6px rgba(236, 72, 153, 0.65),
-      0 10px 28px rgba(0, 0, 0, 0.35);
+    background: ${(props) => rgba(props.theme.background.mantle, 0.9)};
+    border-color: ${(props) => props.theme.border.border1};
+    border-left: 3px solid ${(props) => rgba(props.theme.primary.solid, 0.55)};
   }
 
   .metric-card--behind {
-    background: linear-gradient(152deg, rgba(34, 211, 238, 0.92) 0%, rgba(8, 145, 178, 0.95) 48%, rgba(21, 94, 117, 0.96) 100%);
-    border-color: rgba(207, 250, 254, 0.5);
-    box-shadow:
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.25)},
-      0 0 26px -6px rgba(34, 211, 238, 0.55),
-      0 10px 28px rgba(0, 0, 0, 0.35);
+    background: ${(props) => rgba(props.theme.background.mantle, 0.9)};
+    border-color: ${(props) => props.theme.border.border1};
+    border-left: 3px solid ${(props) => rgba(props.theme.status.info.border, 0.5)};
   }
 
   .metric-card--locales {
-    background: linear-gradient(152deg, rgba(52, 211, 153, 0.94) 0%, rgba(16, 185, 129, 0.96) 50%, rgba(5, 122, 85, 0.97) 100%);
-    border-color: rgba(209, 250, 229, 0.5);
-    box-shadow:
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.22)},
-      0 0 26px -6px rgba(52, 211, 153, 0.5),
-      0 10px 28px rgba(0, 0, 0, 0.35);
+    background: ${(props) => rgba(props.theme.background.mantle, 0.9)};
+    border-color: ${(props) => props.theme.border.border1};
+    border-left: 3px solid ${(props) => rgba(props.theme.status.success.border, 0.5)};
   }
 
   .metric-card--pendientes {
-    background: linear-gradient(152deg, rgba(251, 191, 36, 0.96) 0%, rgba(245, 158, 11, 0.95) 45%, rgba(217, 119, 6, 0.96) 100%);
-    border-color: rgba(254, 243, 199, 0.6);
-    box-shadow:
-      inset 0 1px 0 ${rgba(255, 255, 255, 0.35)},
-      0 0 26px -6px rgba(251, 191, 36, 0.55),
-      0 10px 28px rgba(0, 0, 0, 0.35);
+    background: ${(props) => rgba(props.theme.background.mantle, 0.9)};
+    border-color: ${(props) => props.theme.border.border1};
+    border-left: 3px solid ${(props) => rgba(props.theme.status.warning.border, 0.45)};
   }
 
   .metric-card .metric-label {
@@ -347,12 +327,9 @@ const StyledWrapper = styled.div`
 
   .metric-card--ahead .metric-label,
   .metric-card--behind .metric-label,
-  .metric-card--locales .metric-label {
-    color: ${rgba('#0c0418', 0.72)};
-  }
-
+  .metric-card--locales .metric-label,
   .metric-card--pendientes .metric-label {
-    color: ${rgba('#422006', 0.78)};
+    color: ${(props) => props.theme.colors.text.muted};
   }
 
   .metric-card .metric-value {
@@ -362,26 +339,20 @@ const StyledWrapper = styled.div`
     letter-spacing: -0.02em;
   }
 
-  .metric-card--ahead .metric-value,
-  .metric-card--behind .metric-value,
-  .metric-card--locales .metric-value {
-    color: #fdf4ff;
-    text-shadow: 0 0 18px ${rgba(255, 255, 255, 0.35)};
+  .metric-card--ahead .metric-value {
+    color: ${(props) => props.theme.text};
   }
 
   .metric-card--behind .metric-value {
-    color: #f0fdfa;
-    text-shadow: 0 0 16px ${rgba(6, 78, 59, 0.35)};
+    color: ${(props) => props.theme.text};
   }
 
   .metric-card--locales .metric-value {
-    color: #ecfdf5;
-    text-shadow: 0 0 16px ${rgba(6, 78, 59, 0.3)};
+    color: ${(props) => props.theme.text};
   }
 
   .metric-card--pendientes .metric-value {
-    color: #1c1917;
-    text-shadow: none;
+    color: ${(props) => props.theme.text};
   }
 
   .signal-row {

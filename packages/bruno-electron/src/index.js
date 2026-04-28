@@ -16,7 +16,6 @@ if (isDev) {
   }
 }
 
-const { format } = require('url');
 const { BrowserWindow, app, session, Menu, globalShortcut, ipcMain, nativeTheme } = require('electron');
 const { setContentSecurityPolicy } = require('electron-util');
 
@@ -193,6 +192,7 @@ app.on('ready', async () => {
   });
 
   Menu.setApplicationMenu(menu);
+
   const { maximized, x, y, width, height } = loadWindowState();
 
   mainWindow = new BrowserWindow({
@@ -207,7 +207,12 @@ app.on('ready', async () => {
       nodeIntegration: true,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
-      webviewTag: true
+      webviewTag: true,
+      /*
+       * Empaquetado: index.html es file://. Con webSecurity en true, Chromium a menudo bloquea
+       * scripts/recursos bajo ./static (origen “opaco”) → pantalla en blanco. En dev seguimos con true.
+       */
+      webSecurity: isDev
     },
     title: 'Rebase',
     icon: path.join(__dirname, 'about/256x256.png'),
@@ -316,29 +321,36 @@ app.on('ready', async () => {
     mainWindow.show();
   });
   const devPort = process.env.BRUNO_DEV_PORT || 3000;
-  const url = isDev
-    ? `http://localhost:${devPort}`
-    : format({
-        pathname: path.join(__dirname, '../web/index.html'),
-        protocol: 'file:',
-        slashes: true
+  if (!isDev) {
+    mainWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+      console.error('[Rebase] Fallo al cargar recurso:', { errorCode, errorDescription, validatedURL });
+      // Open DevTools so the error is visible in the installed app (remove once stable).
+      mainWindow.webContents.openDevTools();
+    });
+  }
+  const indexHtmlPath = path.join(__dirname, '../web/index.html');
+  if (isDev) {
+    // En dev, el servidor rsbuild puede tardar un poco más en aceptar conexiones.
+    // Reintentar hasta 10 veces con 1 segundo de espera entre intentos.
+    const devUrl = `http://localhost:${devPort}`;
+    const tryLoad = (attemptsLeft) => {
+      mainWindow.loadURL(devUrl).catch((err) => {
+        if (attemptsLeft > 1) {
+          console.log(`[Rebase] Dev server no disponible aún, reintentando... (${attemptsLeft - 1} intentos restantes)`);
+          setTimeout(() => tryLoad(attemptsLeft - 1), 1000);
+        } else {
+          console.error(`[Rebase] No se pudo conectar a http://localhost:${devPort} después de varios intentos.`);
+          console.error('Error original:', err.message);
+        }
       });
-
-  mainWindow.loadURL(url).catch((reason) => {
-    console.error(`Error: Failed to load URL: "${url}" (Electron shows a blank screen because of this).`);
-    console.error('Original message:', reason);
-    if (isDev) {
-      console.error(
-        'Could not connect to Next.Js dev server, is it running?'
-        + ' Start the dev server using "npm run dev:web" and restart electron'
-      );
-    } else {
-      console.error(
-        'If you are using an official production build: the above error is most likely a bug! '
-        + ' Please report this under: https://github.com/usebruno/bruno/issues'
-      );
-    }
-  });
+    };
+    tryLoad(10);
+  } else {
+    mainWindow.loadFile(indexHtmlPath).catch((reason) => {
+      console.error(`[Rebase] Error al cargar: "${indexHtmlPath}"`);
+      console.error('Mensaje:', reason);
+    });
+  }
 
   let boundsTimeout;
   const handleBoundsChange = () => {

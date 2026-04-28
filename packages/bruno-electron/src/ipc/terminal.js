@@ -1,8 +1,33 @@
 const { ipcMain } = require('electron');
-const pty = require('@lydell/node-pty');
 const os = require('os');
 const path = require('path');
 const isDev = Boolean(process.env.BRUNO_DEV_PORT);
+
+/** Carga diferida: en Windows un .node mal recompilado para la versión de Electron puede tumbar el proceso al importar. */
+let nodePty = null;
+let nodePtyLoadError = null;
+function getNodePty() {
+  if (nodePtyLoadError) {
+    return null;
+  }
+  if (nodePty) {
+    return nodePty;
+  }
+  try {
+    nodePty = require('@lydell/node-pty');
+    return nodePty;
+  } catch (err) {
+    nodePtyLoadError = err;
+    console.error(
+      '[terminal] No se pudo cargar @lydell/node-pty; el panel de terminal quedará desactivado.',
+      err?.message || err
+    );
+    console.error(
+      '[terminal] Prueba en la raíz del repo: npm rebuild @lydell/node-pty --workspace=packages/bruno-electron'
+    );
+    return null;
+  }
+}
 
 class TerminalManager {
   constructor() {
@@ -21,6 +46,11 @@ class TerminalManager {
 
         if (isDev) {
           console.log(`Creating new terminal session: ${sessionId} at ${cwd}`);
+        }
+
+        const pty = getNodePty();
+        if (!pty) {
+          return null;
         }
 
         const ptyProcess = pty.spawn(shell, [], {

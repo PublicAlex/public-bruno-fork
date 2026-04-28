@@ -74,19 +74,19 @@ const getVariantStyles = (props) => {
 const statusGlow = (status) => {
   switch (status) {
     case 'success':
-      return 'rgba(52, 211, 153, 0.5)';
+      return 'rgba(52, 211, 153, 0.22)';
     case 'info':
-      return 'rgba(56, 189, 248, 0.48)';
+      return 'rgba(56, 189, 248, 0.2)';
     case 'warning':
-      return 'rgba(250, 204, 21, 0.5)';
+      return 'rgba(234, 179, 8, 0.22)';
     case 'danger':
-      return 'rgba(251, 113, 133, 0.52)';
+      return 'rgba(244, 114, 133, 0.22)';
     default:
       return 'transparent';
   }
 };
 
-/** Vidrio + halo neón en variantes claras (afecta badges en Git, sidebar, OpenAPI, etc.) */
+/** Vidrio + halo muy suave (pills en Git, sidebar, OpenAPI, etc.) */
 const neonSurface = (props) => {
   const { $status, $variant } = props;
   const variant = $variant || 'light';
@@ -99,15 +99,15 @@ const neonSurface = (props) => {
     if (variant === 'light' || variant === 'outline') {
       const soft
         = props.theme.mode === 'dark'
-          ? rgba(168, 85, 247, 0.32)
-          : rgba(124, 58, 237, 0.22);
-      const inset = props.theme.mode === 'dark' ? rgba(255, 255, 255, 0.12) : rgba(255, 255, 255, 0.45);
+          ? rgba(148, 132, 188, 0.2)
+          : rgba(124, 58, 237, 0.16);
+      const inset = props.theme.mode === 'dark' ? rgba(255, 255, 255, 0.08) : rgba(255, 255, 255, 0.4);
       return css`
-        backdrop-filter: blur(8px) saturate(1.35);
-        -webkit-backdrop-filter: blur(8px) saturate(1.35);
+        backdrop-filter: blur(8px) saturate(1.12);
+        -webkit-backdrop-filter: blur(8px) saturate(1.12);
         box-shadow:
           inset 0 1px 0 ${inset},
-          0 0 14px -6px ${soft};
+          0 0 10px -4px ${soft};
       `;
     }
     return '';
@@ -120,19 +120,19 @@ const neonSurface = (props) => {
 
   if (variant === 'light' || variant === 'outline') {
     return css`
-      backdrop-filter: blur(10px) saturate(1.5);
-      -webkit-backdrop-filter: blur(10px) saturate(1.5);
+      backdrop-filter: blur(8px) saturate(1.15);
+      -webkit-backdrop-filter: blur(8px) saturate(1.15);
       box-shadow:
-        inset 0 1px 0 ${rgba(255, 255, 255, 0.22)},
-        0 0 18px -5px ${glow};
+        inset 0 1px 0 ${rgba(255, 255, 255, 0.12)},
+        0 0 12px -6px ${glow};
     `;
   }
 
   if (variant === 'filled') {
     return css`
       box-shadow:
-        inset 0 1px 0 ${rgba(255, 255, 255, 0.28)},
-        0 0 16px -4px ${glow};
+        inset 0 1px 0 ${rgba(255, 255, 255, 0.18)},
+        0 0 10px -5px ${glow};
     `;
   }
 
